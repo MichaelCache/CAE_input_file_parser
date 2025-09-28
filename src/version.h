@@ -1,0 +1,5 @@
+#pragma once
+
+#define CAE_PARSER_VERSION_MAJOR 0
+#define CAE_PARSER_VERSION_MINOR 0
+#define CAE_PARSER_VERSION_PATCH 0
