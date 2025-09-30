@@ -12,8 +12,8 @@ namespace CAEParser {
  */
 struct CAEPARSER_API Position {
   // TODO: source file
-  uint64_t byte_pos{0};  //
-  uint64_t line{0};
-  uint64_t colum{0};
+  uint64_t _byte_pos{0};  //
+  uint64_t _line{0};
+  uint64_t _colum{0};
 };
 }  // namespace CAEParser
