@@ -38,3 +38,7 @@ if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 endif()
 
 add_subdirectory(src)
+
+if(CAEPARSER_IS_MAIN_PROJECT)
+  add_subdirectory(test)
+endif()
