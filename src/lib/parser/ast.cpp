@@ -6,7 +6,8 @@ void ASTNode::setType(const std::type_index& t) { _node_type = t; }
 
 void ASTNode::addChildren(std::shared_ptr<ASTNode> node) {
   _children.push_back(node);
-  node->_parent = shared_from_this();
+  // FIXME:add parent to node
+  // node->_parent = shared_from_this();
 }
 
 std::shared_ptr<ASTNode> ASTNode::parent() const {
