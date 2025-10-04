@@ -5,3 +5,12 @@
 #elif defined(__linux__)
 #define CAEPARSER_API __attribute__((visibility("default")))
 #endif
+
+#include <string>
+#include <typeindex>
+
+
+namespace CAEParser {
+CAEPARSER_API std::string demangle_type_index(
+    const std::type_index& type_index);
+}

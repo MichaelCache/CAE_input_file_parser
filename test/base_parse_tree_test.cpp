@@ -13,5 +13,5 @@ TEST_CASE("save_content_to_tree") {
   CAEParser::ParseState state;
   peg::parse<peg::seq<save_grammar>, peg::nothing, CAEParser::SaveToState>(
       peg::memory_input("34", ""), state);
-  std::cout << state._ast->toString() << std::endl;
+  std::cout << state._ast << std::endl;
 }

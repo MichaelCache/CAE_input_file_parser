@@ -50,7 +50,7 @@ struct SaveToState<Rule, typename std::enable_if<
   template <typename ParseInput, typename... States>
   static void failure(const ParseInput& /*unused*/, ParseState& state,
                       States&&... /*unused*/) noexcept {
-    state._stack.top();
+    state._stack.pop();
   }
 };
 
