@@ -9,7 +9,6 @@
 #include "sources.h"
 #include "tao/pegtl.hpp"
 
-
 namespace CAEParser {
 
 template <typename Rule, typename T = void>
@@ -39,7 +38,7 @@ struct SaveToState<Rule, typename std::enable_if<
   template <typename ParseInput, typename... States>
   static void success(const ParseInput& in, ParseState& state,
                       States&&... /*unused*/) noexcept {
-    auto& node = state._stack.top();
+    auto node = state._stack.top();
     auto&& pos = in.position();
     node->_end._byte_pos = pos.byte;
     node->_end._line = pos.line;

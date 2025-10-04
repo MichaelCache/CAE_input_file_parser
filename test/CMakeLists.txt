@@ -4,12 +4,14 @@ foreach(CPP_FILE ${TEST_SRC})
   add_executable(${EXECUTABLE_NAME} ${CPP_FILE})
   target_link_directories(${EXECUTABLE_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
   target_link_libraries(${EXECUTABLE_NAME} PUBLIC caeparser)
-  add_custom_command(
-  TARGET ${EXECUTABLE_NAME}
-  POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:caeparser>
-          $<TARGET_FILE_DIR:${EXECUTABLE_NAME}>
-  COMMENT "Copying caeparser.dll to executable directory")
+  if(MSVC)
+    # for windows, copy dll to unittest bin dir in runtime
+    add_custom_command(
+      TARGET ${EXECUTABLE_NAME}
+      POST_BUILD
+      COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:caeparser>
+              $<TARGET_FILE_DIR:${EXECUTABLE_NAME}>
+      COMMENT "Copying caeparser.dll to unittest directory")
+  endif()
+
 endforeach()
-
-
