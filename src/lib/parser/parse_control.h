@@ -19,7 +19,7 @@ struct SaveToState : peg::normal<Rule> {};
 
 template <typename Rule>
 struct SaveToState<Rule, typename std::enable_if<
-                             std::is_base_of<savenode_tag, Rule>::value>::type>
+                             std::is_base_of<astnode_tag, Rule>::value>::type>
     : peg::normal<Rule> {
   template <typename ParseInput, typename... States>
   static void start(const ParseInput& in, ParseState& state,
@@ -56,14 +56,31 @@ struct SaveToState<Rule, typename std::enable_if<
 
 template <typename Rule>
 struct SaveToState<
-    Rule, typename std::enable_if<std::is_base_of<not_parsed, Rule>::value,
+    Rule, typename std::enable_if<std::is_base_of<not_parsed_tag, Rule>::value,
                                   void>::type> : peg::normal<Rule> {
+  template <typename ParseInput, typename... States>
+  static void start(const ParseInput& in, ParseState& state,
+                    States&&... /*unused*/) noexcept {
+    auto&& pos = in.position();
+    state._not_parsed.addContent(in.source(), *in.current(), pos.byte, pos.line,
+                                 pos.column);
+  }
+};
+
+template <typename Rule, typename T = void>
+struct ParseToTree : SaveToState<Rule> {};
+
+template <typename Rule>
+struct ParseToTree<Rule, typename std::enable_if<
+                             std::is_base_of<savenode_tag, Rule>::value>::type>
+    : SaveToState<Rule> {
   template <typename ParseInput, typename... States>
   static void success(const ParseInput& in, ParseState& state,
                       States&&... /*unused*/) noexcept {
-    auto&& pos = in.position();
-    state._not_parsed.addContent(in.source(), *in.current(), pos.byte, pos.line,
-                                 pos.colum);
+    auto node = state._stack.top();
+    node->_content =
+        std::string(in.begin() + node->_start._byte_pos, in.current());
+    SaveToState<Rule>::success(in, state);
   }
 };
 

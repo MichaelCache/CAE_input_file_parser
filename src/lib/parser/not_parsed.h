@@ -22,10 +22,13 @@ struct CAEPARSER_API NotParsedRange {
   using FileName = std::string;
   using LineNo = uint64_t;
 
-  void addContent(const std::string& filename, char& c, uint64_t pos,
+  void addContent(const std::string& filename, const char& c, uint64_t pos,
                   uint64_t line, uint64_t row);
 
-  std::string toString() const;
+  bool empty() const;
+
+  CAEPARSER_API friend std::ostream& operator<<(
+      std::ostream& os, const NotParsedRange not_parsed);
 
   std::unordered_map<FileName, std::map<LineNo, std::vector<NotParsedContent>>>
       _not_parsed_range;

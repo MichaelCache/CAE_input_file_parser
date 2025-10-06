@@ -23,6 +23,8 @@ ASTNode::iterator ASTNode::end() { return _children.end(); }
 ASTNode::const_iterator ASTNode::begin() const { return _children.begin(); }
 ASTNode::const_iterator ASTNode::end() const { return _children.end(); }
 
+size_t ASTNode::childreSize() const { return _children.size(); }
+
 std::ostream& operator<<(std::ostream& os,
                          const std::shared_ptr<ASTNode> node) {
   node->streamOut(os, 0);

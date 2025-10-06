@@ -41,6 +41,8 @@ class CAEPARSER_API ASTNode : public std::enable_shared_from_this<ASTNode> {
   const_iterator begin() const;
   const_iterator end() const;
 
+  size_t childreSize() const;
+
   /**
    * @brief check node grammar type
    *
