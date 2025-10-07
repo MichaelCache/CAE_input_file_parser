@@ -1,6 +1,7 @@
 #pragma once
-#include <set>
+#include <memory>
 #include <string>
+#include <vector>
 
 #include "platform.h"
 
@@ -10,14 +11,17 @@ class CAEPARSER_API Sources {
   static Sources& ins();
   void reset();
   void add(const std::string&);
-  std::string_view current() const;
+  std::shared_ptr<std::string> current() const;
 
  private:
   Sources(/* args */) = default;
   ~Sources() = default;
 
-  std::set<std::string> _sources_file;
-  std::string_view _current;
+  // use std::shared_ptr to hold std::string
+  // share with astnode, reduce memory uesage
+  // auto manage memory even _sources_file.clear()
+  std::vector<std::shared_ptr<std::string>> _sources_file;
+  std::shared_ptr<std::string> _current{nullptr};
 };
 
 }  // namespace CAEParser

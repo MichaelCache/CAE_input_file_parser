@@ -9,7 +9,6 @@
 #include "platform.h"
 #include "position.h"
 
-
 namespace CAEParser {
 
 /**
@@ -64,7 +63,7 @@ class CAEPARSER_API ASTNode : public std::enable_shared_from_this<ASTNode> {
   std::string _content;
   Position _start;
   Position _end;
-  std::string_view _source_file;
+  std::shared_ptr<std::string> _source_file;
 
  private:
   std::type_index _node_type{typeid(void)};

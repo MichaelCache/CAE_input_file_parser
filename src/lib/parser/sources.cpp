@@ -5,14 +5,20 @@ Sources& Sources::ins() {
   static Sources obj;
   return obj;
 }
+
 void Sources::reset() { Sources::ins()._sources_file.clear(); }
+
 void Sources::add(const std::string& s) {
-  if (_sources_file.count(s)) {
-    // pass
+  auto it = std::find_if(
+      _sources_file.begin(), _sources_file.end(),
+      [&](const std::shared_ptr<std::string>& sf) { return *sf == s; });
+  if (it != _sources_file.end()) {
+    _current = *(it);
   } else {
-    _sources_file.insert(s);
+    _current = std::make_shared<std::string>(s);
+    _sources_file.push_back(_current);
   }
-  _current = *(_sources_file.find(s));
 }
-std::string_view Sources::current() const { return _current; }
+
+std::shared_ptr<std::string> Sources::current() const { return _current; }
 }  // namespace CAEParser

@@ -42,6 +42,8 @@ void NotParsedRange::addContent(const std::string& filename, const char& c,
 bool NotParsedRange::empty() const { return _not_parsed_range.empty(); }
 
 std::ostream& operator<<(std::ostream& os, const NotParsedRange not_parsed) {
+  size_t count = not_parsed._not_parsed_range.size();
+  size_t i = 1;
   for (auto&& f_l : not_parsed._not_parsed_range) {
     // step.1 find longest colum num tostring width
     auto& l_map = f_l.second;
@@ -69,7 +71,11 @@ std::ostream& operator<<(std::ostream& os, const NotParsedRange not_parsed) {
     }
 
     os << "--------------------------------------------------------------------"
-          "------------\n";
+          "------------";
+    if (i < count) {
+      os << "\n";
+    }
+    i++;
   }
 
   return os;

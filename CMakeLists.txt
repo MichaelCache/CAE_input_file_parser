@@ -25,16 +25,32 @@ project(
 # ##############################################################################
 # installation directories                                                     #
 # ##############################################################################
-set(PROJECT_INSTALL_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}/include/CAEParser")
-set(PROJECT_INSTALL_BIN_DIR "${CMAKE_INSTALL_PREFIX}/bin")
-set(PROJECT_INSTALL_LIB_DIR "${CMAKE_INSTALL_PREFIX}/lib/CAEParser")
-set(PROJECT_INSTALL_CMAKE_DIR "${CMAKE_INSTALL_PREFIX}/lib/cmake")
+if(LINUX)
+  set(PROJECT_INSTALL_INCLUDE_DIR "include/CAEParser")
+  set(PROJECT_INSTALL_BIN_DIR "bin")
+  set(PROJECT_INSTALL_LIB_DIR "lib/CAEParser")
+  set(PROJECT_INSTALL_CMAKE_DIR "share/CAEParser/cmake")
+elseif(WIN32)
+  set(PROJECT_INSTALL_INCLUDE_DIR "include/CAEParser")
+  set(PROJECT_INSTALL_BIN_DIR "./")
+  set(PROJECT_INSTALL_LIB_DIR "./")
+  set(PROJECT_INSTALL_CMAKE_DIR "share/CAEParser/cmake")
+endif()
 
 set(CMAKE_CXX_STANDARD 20)
 set(EXPORT_COMPILE_COMMANDS True)
 
 if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
   set(CAEPARSER_IS_MAIN_PROJECT ON)
+endif()
+
+# ##############################################################################
+# print project config info                                                    #
+# ##############################################################################
+if(CAEPARSER_IS_MAIN_PROJECT)
+  message(STATUS "Config ${PROJECT_NAME} version ${PROJECT_VERSION}")
+  message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
+  message(STATUS "Install directory: ${CMAKE_INSTALL_PREFIX}")
 endif()
 
 add_subdirectory(src)

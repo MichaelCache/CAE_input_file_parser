@@ -4,7 +4,7 @@ foreach(CPP_FILE ${TEST_SRC})
   add_executable(${EXECUTABLE_NAME} ${CPP_FILE})
   target_link_directories(${EXECUTABLE_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
   target_link_libraries(${EXECUTABLE_NAME} PUBLIC caeparser)
-  if(MSVC)
+  if(WIN32)
     # for windows, copy dll to unittest bin dir in runtime
     add_custom_command(
       TARGET ${EXECUTABLE_NAME}
