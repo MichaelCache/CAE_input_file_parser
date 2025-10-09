@@ -11,16 +11,15 @@
 
 namespace CAEParser {
 
-template <typename Rule, typename T = void>
+template <typename Rule>
 struct SaveToState : peg::normal<Rule> {};
 
-// template<typename T>
-// concept DerivedFromBase = std::is_base_of_v<savenode_tag, T>;
+template <typename T, typename Base>
+concept DerivedFromBase = std::is_base_of_v<Base, T>;
 
 template <typename Rule>
-struct SaveToState<Rule, typename std::enable_if<
-                             std::is_base_of<astnode_tag, Rule>::value>::type>
-    : peg::normal<Rule> {
+  requires DerivedFromBase<Rule, astnode_tag>
+struct SaveToState<Rule> : peg::normal<Rule> {
   template <typename ParseInput, typename... States>
   static void start(const ParseInput& in, ParseState& state,
                     States&&... /*unused*/) noexcept {
@@ -55,9 +54,8 @@ struct SaveToState<Rule, typename std::enable_if<
 };
 
 template <typename Rule>
-struct SaveToState<
-    Rule, typename std::enable_if<std::is_base_of<not_parsed_tag, Rule>::value,
-                                  void>::type> : peg::normal<Rule> {
+  requires DerivedFromBase<Rule, not_parsed_tag>
+struct SaveToState<Rule> : peg::normal<Rule> {
   template <typename ParseInput, typename... States>
   static void start(const ParseInput& in, ParseState& state,
                     States&&... /*unused*/) noexcept {
@@ -67,13 +65,12 @@ struct SaveToState<
   }
 };
 
-template <typename Rule, typename T = void>
+template <typename Rule>
 struct ParseToTree : SaveToState<Rule> {};
 
 template <typename Rule>
-struct ParseToTree<Rule, typename std::enable_if<
-                             std::is_base_of<savenode_tag, Rule>::value>::type>
-    : SaveToState<Rule> {
+  requires DerivedFromBase<Rule, savenode_tag>
+struct ParseToTree<Rule> : SaveToState<Rule> {
   template <typename ParseInput, typename... States>
   static void success(const ParseInput& in, ParseState& state,
                       States&&... /*unused*/) noexcept {
