@@ -1,5 +1,8 @@
 #include "sources.h"
 
+#include <algorithm>
+
+
 namespace CAEParser {
 Sources& Sources::ins() {
   static Sources obj;
