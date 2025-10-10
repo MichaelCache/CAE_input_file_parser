@@ -16,9 +16,9 @@ class CAEPARSER_API Parser {
  public:
   Parser(/* args */) = default;
   virtual ~Parser() = default;
-  virtual std::tuple<std::shared_ptr<ASTNode>, NotParsedContent> parse(
-      const std::string& content, const std::string& fn = "") = 0;
-  virtual std::tuple<std::shared_ptr<ASTNode>, NotParsedContent> parseFile(
+  virtual std::tuple<std::shared_ptr<ASTNode>, NotParsedRange> parse(
+      const std::string& content, const std::string& fn = "std::string") = 0;
+  virtual std::tuple<std::shared_ptr<ASTNode>, NotParsedRange> parseFile(
       const std::string& fn) = 0;
 };
 

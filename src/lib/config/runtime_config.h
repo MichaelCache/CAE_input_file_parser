@@ -8,7 +8,7 @@ class CAEPARSER_API RuntimeConfig {
   static RuntimeConfig& ins();
 
   bool _show_progress{true};
-  bool _debug_parser{false};
+  bool _trace_parser{false};
 
  private:
   RuntimeConfig(/* args */) = default;
