@@ -10,11 +10,11 @@
 #include "tao/pegtl/contrib/analyze.hpp"
 #include "tao/pegtl/contrib/trace.hpp"
 
-namespace CAEParser {
+namespace K {
 namespace peg = tao::pegtl;
 
-std::tuple<std::shared_ptr<ASTNode>, NotParsedRange> KParser::parse(
-    const std::string& content, const std::string& fn) {
+std::tuple<std::shared_ptr<CAEParser::ASTNode>, CAEParser::NotParsedRange>
+KParser::parse(const std::string& content, const std::string& fn) {
   peg::string_input input(content, fn);
 
 #ifdef NDEBUG
@@ -24,18 +24,18 @@ std::tuple<std::shared_ptr<ASTNode>, NotParsedRange> KParser::parse(
     throw std::runtime_error("k_grammar has problem");
   }
 #endif
-  if (RuntimeConfig::ins()._trace_parser) {
+  if (CAEParser::RuntimeConfig::ins()._trace_parser) {
     peg::string_input trace_input(content, fn);
     peg::standard_trace<k_grammar>(trace_input);
   }
 
-  ParseState state;
-  peg::parse<k_grammar, peg::nothing, ParseToTree>(input, state);
+  CAEParser::ParseState state;
+  peg::parse<k_grammar, peg::nothing, CAEParser::ParseToTree>(input, state);
   return std::make_tuple(state._ast, state._not_parsed);
 }
 
-std::tuple<std::shared_ptr<ASTNode>, NotParsedRange> KParser::parseFile(
-    const std::string& fn) {
+std::tuple<std::shared_ptr<CAEParser::ASTNode>, CAEParser::NotParsedRange>
+KParser::parseFile(const std::string& fn) {
   peg::file_input input(fn);
 
 #ifdef NDEBUG
@@ -45,14 +45,14 @@ std::tuple<std::shared_ptr<ASTNode>, NotParsedRange> KParser::parseFile(
     throw std::runtime_error("k_grammar has problem");
   }
 #endif
-  if (RuntimeConfig::ins()._trace_parser) {
+  if (CAEParser::RuntimeConfig::ins()._trace_parser) {
     peg::file_input trace_input(fn);
     peg::standard_trace<k_grammar>(trace_input);
   }
 
-  ParseState state;
-  peg::parse<k_grammar, peg::nothing, ParseToTree>(input, state);
+  CAEParser::ParseState state;
+  peg::parse<k_grammar, peg::nothing, CAEParser::ParseToTree>(input, state);
   return std::make_tuple(state._ast, state._not_parsed);
 }
 
-}  // namespace CAEParser
+}  // namespace K

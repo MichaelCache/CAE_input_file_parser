@@ -1,10 +1,27 @@
 #pragma once
 
+#include "k_grammar/k_card.h"
+#include "parser/base_grammar/ikeyword.h"
+#include "parser/control_tag.h"
 #include "tao/pegtl.hpp"
 
-namespace CAEParser {
+namespace K {
 namespace peg = tao::pegtl;
 
-struct k_grammar : peg::until<peg::eolf> {};
+struct not_parsed : peg::any, CAEParser::not_parsed_tag {};
+struct empty_line : peg::seq<peg::bol, peg::star<peg::blank>, peg::eolf> {};
+struct comment : peg::seq<peg::one<'$'>, peg::until<peg::at<peg::eolf>>> {};
+struct comment_line : peg::seq<peg::bol, comment, peg::eolf> {};
 
-}  // namespace CAEParser
+struct k_keyword : peg::seq<peg::bol, EXTEND_PEGTL_IKEYWORD("*KEYWORD"),
+                            peg::until<peg::eolf>> {};
+struct k_end
+    : peg::seq<peg::bol, EXTEND_PEGTL_IKEYWORD("*END"), peg::until<peg::eolf>> {
+};
+
+struct k_grammar
+    : peg::seq<peg::pad<peg::sor<empty_line, comment_line>, k_keyword>,
+               peg::until<peg::sor<k_end, peg::eolf>, k_card, comment_line,
+                          empty_line, not_parsed>> {};
+
+}  // namespace K

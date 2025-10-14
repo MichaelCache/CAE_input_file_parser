@@ -1,6 +1,6 @@
 #pragma once
 
-#include "pegtl.hpp"
+#include "tao/pegtl.hpp"
 
 namespace CAEParser {
 namespace peg = tao::pegtl;
@@ -33,13 +33,19 @@ struct keyword {
     auto current = in.current();
     if (current != in.begin()) {
       // if pre byte is identifier return false
-      ParseInput pre_char(in.iterator() - 1, in.end(), in.source());
+      peg::memory_input pre_char(in.current() - 1, in.end(), in.source());
       if (peg::identifier_other::template match(pre_char)) {
         return false;
       }
     }
-    return peg::string<Cs...>::template match(in, st...);
+    return peg::string<Cs...>::template match(in);
   }
 };
+
+#define EXTEND_PEGTL_KEYWORD(x) \
+  TAO_PEGTL_INTERNAL_STRING(CAEParser::ikeyword, x)
+
+#define EXTEND_PEGTL_IKEYWORD(x) \
+  TAO_PEGTL_INTERNAL_STRING(CAEParser::keyword, x)
 
 }  // namespace CAEParser

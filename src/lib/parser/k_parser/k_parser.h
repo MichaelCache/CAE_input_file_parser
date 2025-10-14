@@ -3,19 +3,21 @@
 #include "parser/parser_interface.h"
 #include "platform.h"
 
-namespace CAEParser {
+namespace K {
 /**
  * @brief lsdyna k file parser
  *
  */
-class CAEPARSER_API KParser : Parser {
+class CAEPARSER_API KParser : CAEParser::Parser {
  public:
   KParser(/* args */) = default;
   virtual ~KParser() = default;
-  virtual std::tuple<std::shared_ptr<ASTNode>, NotParsedRange> parse(
-      const std::string& content, const std::string& fn = "std::string");
-  virtual std::tuple<std::shared_ptr<ASTNode>, NotParsedRange> parseFile(
-      const std::string& fn);
+  virtual std::tuple<std::shared_ptr<CAEParser::ASTNode>,
+                     CAEParser::NotParsedRange>
+  parse(const std::string& content, const std::string& fn = "std::string");
+  virtual std::tuple<std::shared_ptr<CAEParser::ASTNode>,
+                     CAEParser::NotParsedRange>
+  parseFile(const std::string& fn);
 };
 
-}  // namespace CAEParser
+}  // namespace K
