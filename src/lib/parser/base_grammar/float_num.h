@@ -9,7 +9,7 @@ namespace peg = tao::pegtl;
 struct point_num
     : peg::seq<peg::star<peg::digit>, peg::one<'.'>, peg::plus<peg::digit>> {};
 
-// match "1." like as float
+// match "1.", "1.1" like as float
 struct num_point
     : peg::seq<peg::plus<peg::digit>, peg::one<'.'>, peg::star<peg::digit>> {};
 

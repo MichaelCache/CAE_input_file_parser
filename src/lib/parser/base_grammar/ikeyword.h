@@ -6,6 +6,9 @@ namespace CAEParser {
 namespace peg = tao::pegtl;
 template <char... Cs>
 struct ikeyword {
+  using rule_t = ikeyword;
+  using subs_t = peg::empty_list;
+
   template <peg::apply_mode, peg::rewind_mode,
             template <typename...> class Action,
             template <typename...> class Control, typename ParseInput,
@@ -25,6 +28,9 @@ struct ikeyword {
 
 template <char... Cs>
 struct keyword {
+  using rule_t = keyword;
+  using subs_t = peg::empty_list;
+
   template <peg::apply_mode, peg::rewind_mode,
             template <typename...> class Action,
             template <typename...> class Control, typename ParseInput,
