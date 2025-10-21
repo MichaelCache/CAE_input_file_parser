@@ -10,6 +10,7 @@
 #include "tao/pegtl.hpp"
 
 namespace CAEParser {
+namespace peg = tao::pegtl;
 
 template <typename Rule>
 struct SaveToState : peg::normal<Rule> {};

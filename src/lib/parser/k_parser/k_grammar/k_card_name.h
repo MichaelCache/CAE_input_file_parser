@@ -5,8 +5,12 @@
 #include <unordered_map>
 
 #include "k_card_pattern.h"
+#include "platform.h"
 
 namespace K {
-std::unordered_map<std::string, std::shared_ptr<KCardPatternBase> > k_card_name;
+
+extern CAEPARSER_API
+    std::unordered_map<std::string_view, std::shared_ptr<KCardPatternBase>>
+        k_card_name;
 
 }  // namespace K
