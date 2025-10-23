@@ -11,6 +11,6 @@ namespace K {
 
 extern CAEPARSER_API
     std::unordered_map<std::string_view, std::shared_ptr<KCardPatternBase>>
-        k_card_name;
+        k_card_rule;
 
 }  // namespace K

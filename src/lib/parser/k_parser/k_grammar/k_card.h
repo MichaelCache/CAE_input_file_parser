@@ -4,13 +4,12 @@
 #include <cctype>
 
 #include "cut_options.h"
-#include "k_card_name.h"
+#include "k_card_rule.h"
 #include "parser/k_parser/k_parse_state.h"
 #include "tao/pegtl.hpp"
 
 namespace K {
 namespace peg = tao::pegtl;
-// TODO:
 
 struct k_card_end
     : peg::sor<peg::seq<peg::bol, peg::at<peg::one<'*'>>>, peg::eof> {};
@@ -54,17 +53,18 @@ struct k_card_name_option {
     while (true) {
       auto [new_card_name, option] = cutLastSegment(card_name);
       card_name = new_card_name;
-      if (k_card_name.count(card_name)) {
-        auto pattern = k_card_name.at(card_name);
+      if (k_card_rule.count(card_name)) {
+        auto pattern = k_card_rule.at(card_name);
         std::smatch match_result;
         if (std::regex_match(card_name_option, match_result,
                              pattern->_pattern)) {
           return true;
         }
       } else {
-        // do nothing continue loop
+        // do nothing ,continue loop
       }
       if (option.data() == nullptr) {
+        // no more options, break loop
         break;
       }
     }

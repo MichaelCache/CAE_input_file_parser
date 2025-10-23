@@ -11,8 +11,8 @@ namespace peg = tao::pegtl;
  * @tparam size field max length
  */
 template <typename Rule, size_t size>
-struct size_field {
-  using rule_t = size_field;
+struct k_size_field {
+  using rule_t = k_size_field;
   using subs_t = peg::type_list<Rule>;
 
   template <peg::apply_mode A, peg::rewind_mode M,

@@ -6,15 +6,16 @@
 #include "doctest.h"
 #include "parser/base_grammar/int_num.h"
 #include "parser/k_parser/k_grammar/k_card_field.h"
-#include "parser/k_parser/k_grammar/size_field.h"
+#include "parser/k_parser/k_grammar/k_size_field.h"
 #include "tao/pegtl/contrib/trace.hpp"
 #include "tao/pegtl/parse.hpp"
 
 namespace peg = tao::pegtl;
 
-TEST_CASE("size_field") {
+TEST_CASE("k_size_field") {
   struct test_rule
-      : peg::rep<2, K::size_field<peg::pad<K::k_card_field, peg::blank>, 8>> {};
+      : peg::rep<2, K::k_size_field<peg::pad<K::k_card_field, peg::blank>, 8>> {
+  };
   CHECK(peg::parse<test_rule>(peg::memory_input("1         asb", "")));
   CHECK_FALSE(peg::parse<test_rule>(peg::memory_input("1   9", "")));
   CHECK(peg::parse<test_rule>(peg::memory_input("1, 9", "")));
