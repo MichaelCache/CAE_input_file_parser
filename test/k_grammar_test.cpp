@@ -7,7 +7,7 @@
 #include "parser/base_grammar/int_num.h"
 #include "parser/k_parser/k_grammar/k_card_field.h"
 #include "parser/k_parser/k_grammar/k_size_field.h"
-#include "tao/pegtl/contrib/trace.hpp"
+#include "parser/trace_control.h"
 #include "tao/pegtl/parse.hpp"
 
 namespace peg = tao::pegtl;
@@ -38,6 +38,20 @@ TEST_CASE("k_card_name_option") {
       peg::memory_input("*AIRBAG_SIMPLE_AIRBAG_MODEL", ""),
       CAEParser::ParseState(), K::KParseState()));
   CHECK(peg::parse<K::k_card_name_option, peg::nothing, CAEParser::SaveToState>(
+      peg::memory_input("*AIRBAG_SIMPLE_AIRBAG_MODEL        ", ""),
+      CAEParser::ParseState(), K::KParseState()));
+  CHECK(peg::parse<K::k_card_name_option, peg::nothing, CAEParser::SaveToState>(
       peg::memory_input("*AIRBAG_SIMPLE_AIRBAG_MODEL_POP", ""),
       CAEParser::ParseState(), K::KParseState()));
+}
+
+TEST_CASE("k_card") {
+  CAEParser::ParseState state;
+  CHECK(peg::parse<K::k_card, peg::nothing, CAEParser::ParseToTree>(
+      peg::memory_input(R"(*CONTROL_TERMINATION
+$   endtim    endcyc     dtmin    endeng    endmas
+      10.0         0       0.0       0.01.000000E8)",
+                        ""),
+      state, K::KParseState()));
+  std::cout << state._ast << std::endl;
 }

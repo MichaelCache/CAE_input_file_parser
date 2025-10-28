@@ -25,8 +25,11 @@ KParser::parse(const std::string& content, const std::string& fn) {
   }
 #endif
   if (CAEParser::RuntimeConfig::ins()._trace_parser) {
+    // trace parse if enable
     peg::string_input trace_input(content, fn);
-    peg::standard_trace<k_grammar>(trace_input);
+    CAEParser::ParseState trace_state;
+    peg::parse<k_grammar, peg::nothing, CAEParser::TraceParseToTree>(
+        trace_input, trace_state);
   }
 
   CAEParser::ParseState state;
@@ -47,7 +50,9 @@ KParser::parseFile(const std::string& fn) {
 #endif
   if (CAEParser::RuntimeConfig::ins()._trace_parser) {
     peg::file_input trace_input(fn);
-    peg::standard_trace<k_grammar>(trace_input);
+    CAEParser::ParseState trace_state;
+    peg::parse<k_grammar, peg::nothing, CAEParser::TraceParseToTree>(
+        trace_input, trace_state);
   }
 
   CAEParser::ParseState state;

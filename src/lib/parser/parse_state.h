@@ -12,6 +12,7 @@ class CAEPARSER_API ParseState {
   ParseState(/* args */) ;
   ~ParseState() = default;
 
+  // synatx tree root node
   std::shared_ptr<ASTNode> _ast{std::make_shared<ASTNode>()};
   std::stack<std::shared_ptr<ASTNode>> _stack;
   NotParsedRange _not_parsed;

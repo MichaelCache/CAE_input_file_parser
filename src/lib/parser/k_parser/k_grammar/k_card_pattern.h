@@ -2,20 +2,26 @@
 
 #include <regex>
 
+#include "config/runtime_config.h"
 #include "parser/k_parser/k_parse_state.h"
 #include "parser/parse_control.h"
 #include "parser/parse_state.h"
+#include "parser/trace_control.h"
 #include "tao/pegtl.hpp"
 
 namespace K {
 namespace peg = tao::pegtl;
 
+/**
+ * @brief regex make hepler
+ *
+ */
 struct KOptions {
   KOptions(const std::initializer_list<std::string_view>& options,
            bool required = false);
   KOptions(const std::initializer_list<std::string_view>& options,
            const std::string_view& repeat);
-  std::string regex_str;
+  std::string _regex_str;
 };
 
 class KCardPatternBase {
@@ -23,8 +29,8 @@ class KCardPatternBase {
   KCardPatternBase(const std::string_view& card_name,
                    const std::initializer_list<KOptions>& options = {});
   virtual ~KCardPatternBase() = default;
-  std::regex _pattern;
 
+  std::regex _pattern;
   bool (*_match_func)(peg::memory_input<>&, CAEParser::ParseState&,
                       K::KParseState&) = nullptr;
 };
@@ -35,11 +41,19 @@ class KCardPattern : public KCardPatternBase {
   KCardPattern(const std::string_view& card_name,
                const std::initializer_list<KOptions>& options = {})
       : KCardPatternBase(card_name, options) {
-    _match_func =
-        &Rule::template match<peg::apply_mode::action,
-                              peg::rewind_mode::required, peg::nothing,
-                              CAEParser::ParseToTree, peg::memory_input<>&,
-                              CAEParser::ParseState&, K::KParseState&>;
+    // explicit instantiation Rule::template match function
+    if (CAEParser::RuntimeConfig::ins()._trace_parser) {
+      _match_func = &Rule::template match<
+          peg::apply_mode::action, peg::rewind_mode::active, peg::nothing,
+          CAEParser::TraceParseToTree, peg::memory_input<>&,
+          CAEParser::ParseState&, K::KParseState&>;
+    } else {
+      _match_func =
+          &Rule::template match<peg::apply_mode::action,
+                                peg::rewind_mode::active, peg::nothing,
+                                CAEParser::ParseToTree, peg::memory_input<>&,
+                                CAEParser::ParseState&, K::KParseState&>;
+    }
   }
 };
 

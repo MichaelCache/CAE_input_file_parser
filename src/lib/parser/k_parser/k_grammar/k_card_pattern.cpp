@@ -7,14 +7,14 @@ namespace K {
 KOptions::KOptions(const std::initializer_list<std::string_view>& options,
                    bool required) {
   if (options.size()) {
-    regex_str += "(";
+    _regex_str += "(";
     for (auto&& op : options) {
-      regex_str += "_" + std::string(op) + "|";
+      _regex_str += "_" + std::string(op) + "|";
     }
-    regex_str.pop_back();
-    regex_str += ")";
+    _regex_str.pop_back();
+    _regex_str += ")";
     if (!required) {
-      regex_str += "{0,1}";
+      _regex_str += "{0,1}";
     }
   }
 }
@@ -22,12 +22,12 @@ KOptions::KOptions(const std::initializer_list<std::string_view>& options,
 KOptions::KOptions(const std::initializer_list<std::string_view>& options,
                    const std::string_view& repeat) {
   if (options.size()) {
-    regex_str += "(";
+    _regex_str += "(";
     for (auto&& op : options) {
-      regex_str += "_" + std::string(op) + "|";
+      _regex_str += "_" + std::string(op) + "|";
     }
-    regex_str.pop_back();
-    regex_str += ")" + std::string(repeat);
+    _regex_str.pop_back();
+    _regex_str += ")" + std::string(repeat);
   }
 }
 
@@ -41,7 +41,7 @@ KCardPatternBase::KCardPatternBase(
   regex += card_name;
 
   for (auto&& op : options) {
-    regex += op.regex_str;
+    regex += op._regex_str;
   }
   _pattern = regex;
 }

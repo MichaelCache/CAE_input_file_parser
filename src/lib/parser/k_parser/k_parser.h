@@ -5,7 +5,7 @@
 
 namespace K {
 /**
- * @brief lsdyna k file parser
+ * @brief LS-DYNA k file parser
  *
  */
 class CAEPARSER_API KParser : CAEParser::Parser {

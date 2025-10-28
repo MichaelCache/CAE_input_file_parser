@@ -25,6 +25,11 @@ struct k_str_field : peg::plus<peg::sor<peg::alpha, peg::one<'&'>>>,
 struct k_int_field : peg::seq<CAEParser::sign_int_num, peg::not_at<peg::alpha>>,
                      CAEParser::savenode_tag {};
 
+/**
+ * @brief k card field may empty, means use default value, we called it emtpy
+ * field
+ *
+ */
 struct k_empty_field : CAEParser::savenode_tag {
   using rule_t = k_empty_field;
   using subs_t = peg::empty_list;
@@ -34,9 +39,14 @@ struct k_empty_field : CAEParser::savenode_tag {
             template <typename...> class Control, typename ParseInput,
             typename... States>
   [[nodiscard]] static bool match(ParseInput& in, States&&... st) {
-    return peg::seq<peg::bol, peg::star<peg::blank>,
-                    peg::eolf>::template match<A, M, Action, Control>(in,
-                                                                      st...);
+    if (in.current() == in.end()) {
+      // no more char in sized field, it's empty field too
+      return true;
+    } else {
+      // all char in sized field if space ro tab
+      return peg::plus<peg::blank>::template match<A, M, Action, Control>(
+          in, st...);
+    }
   }
 };
 

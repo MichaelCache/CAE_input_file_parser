@@ -6,6 +6,10 @@
 #include "platform.h"
 
 namespace CAEParser {
+/**
+ * @brief singleton class store source filename
+ *
+ */
 class CAEPARSER_API Sources {
  public:
   static Sources& ins();

@@ -12,11 +12,16 @@
 namespace CAEParser {
 namespace peg = tao::pegtl;
 
-template <typename Rule>
-struct SaveToState : peg::normal<Rule> {};
-
 template <typename T, typename Base>
 concept DerivedFromBase = std::is_base_of_v<Base, T>;
+
+/**
+ * @brief save astnode to CAEParser::ParseState
+ *
+ * @tparam Rule
+ */
+template <typename Rule>
+struct SaveToState : peg::normal<Rule> {};
 
 template <typename Rule>
   requires DerivedFromBase<Rule, astnode_tag>
@@ -66,6 +71,11 @@ struct SaveToState<Rule> : peg::normal<Rule> {
   }
 };
 
+/**
+ * @brief save astnode to CAEParser::ParseState, and save content
+ *
+ * @tparam Rule
+ */
 template <typename Rule>
 struct ParseToTree : SaveToState<Rule> {};
 

@@ -39,7 +39,9 @@ struct k_size_field {
     // create a temp input for Rule match
     peg::memory_input tmp(in.begin(), cur, in.source());
     tmp.iterator() = in.iterator();
-    if (Rule::template match<A, M, Action, Control>(tmp, st...)) {
+    if (peg::seq<peg::pad<Rule, peg::blank>,
+                 peg::eof>::template match<A, M, Action, Control>(tmp, st...)) {
+      // only all k_size_field content match, return true
       in.bump(char_count);
       return true;
     } else {
