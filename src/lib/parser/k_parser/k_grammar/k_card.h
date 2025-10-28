@@ -97,7 +97,7 @@ struct k_card : public CAEParser::astnode_tag {
                                   States&&... st) {
     KParseState kstate;
     bool result = true;
-    auto marker = in.mark<M>();
+    auto marker = in.template mark<M>();
     using m_t = decltype(marker);
     result = result &&
              peg::seq<k_card_name_option, peg::star<peg::blank>, peg::eol>::

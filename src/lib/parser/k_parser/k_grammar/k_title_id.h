@@ -44,7 +44,7 @@ struct title_line
     : peg::seq<k_size_field<title, 80>, peg::star<peg::blank>, peg::eolf> {};
 
 struct id : public CAEParser::unsign_int_num, public CAEParser::savenode_tag {};
-struct heading : public title, public CAEParser::savenode_tag {};
+struct heading : public title {};
 
 struct id_line : peg::seq<k_size_field<id, 10>, k_size_field<heading, 70>,
                           peg::star<peg::blank>, peg::eolf> {};

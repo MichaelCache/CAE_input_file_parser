@@ -31,7 +31,7 @@ struct k_card_content {
   [[nodiscard]] static bool match(ParseInput& in, ParseState& stat,
                                   KParseState& kstate, States&&... st) {
     bool result = true;
-    auto marker = in.mark<M>();
+    auto marker = in.template mark<M>();
     using m_t = decltype(marker);
 
     if (kstate._has_id) {
