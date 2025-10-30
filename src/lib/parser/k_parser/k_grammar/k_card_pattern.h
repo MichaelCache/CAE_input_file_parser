@@ -29,10 +29,17 @@ class KCardPatternBase {
   KCardPatternBase(const std::string_view& card_name,
                    const std::initializer_list<KOptions>& options = {});
   virtual ~KCardPatternBase() = default;
+  virtual bool match(const std::string& s);
+  virtual std::vector<std::string> options(const std::string& s);
 
   std::regex _pattern;
   bool (*_match_func)(peg::memory_input<>&, CAEParser::ParseState&,
                       K::KParseState&) = nullptr;
+
+ private:
+  //  cache card name option and regex result impove performance
+  std::string _card_name_option_cache;
+  std::smatch _match_result_cache;
 };
 
 template <typename Rule>

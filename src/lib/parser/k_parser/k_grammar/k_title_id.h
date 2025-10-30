@@ -16,7 +16,7 @@ struct title : public CAEParser::savenode_tag {
             template <typename...> class Action,
             template <typename...> class Control, typename ParseInput,
             typename ParseState, typename... States>
-  [[nodiscard]] static bool match(ParseInput& in, ParseState& stat,
+  [[nodiscard]] static bool match(ParseInput& in, ParseState& state,
                                   States&&... st) {
     auto cur = in.current();
     // get cardname line

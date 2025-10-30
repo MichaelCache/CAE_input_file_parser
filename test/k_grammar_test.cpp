@@ -40,9 +40,11 @@ TEST_CASE("k_card_name_option") {
   CHECK(peg::parse<K::k_card_name_option, peg::nothing, CAEParser::SaveToState>(
       peg::memory_input("*AIRBAG_SIMPLE_AIRBAG_MODEL        ", ""),
       CAEParser::ParseState(), K::KParseState()));
-  CHECK(peg::parse<K::k_card_name_option, peg::nothing, CAEParser::SaveToState>(
-      peg::memory_input("*AIRBAG_SIMPLE_AIRBAG_MODEL_POP", ""),
-      CAEParser::ParseState(), K::KParseState()));
+  CAEParser::ParseState state;
+  CHECK(peg::parse<K::k_card_name_option, peg::nothing, CAEParser::ParseToTree>(
+      peg::memory_input("*AIRBAG_SIMPLE_AIRBAG_MODEL_POP", ""), state,
+      K::KParseState()));
+  std::cout << state._ast << std::endl;
 }
 
 TEST_CASE("k_card") {

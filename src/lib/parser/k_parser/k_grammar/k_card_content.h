@@ -5,6 +5,7 @@
 #include "k_size_field.h"
 #include "k_title_id.h"
 #include "k_trival_grammar.h"
+#include "parser/control_tag.h"
 #include "tao/pegtl.hpp"
 
 
@@ -13,11 +14,13 @@ namespace peg = tao::pegtl;
 
 struct k_card_8_field_line
     : peg::seq<peg::rep<10, k_size_field<k_card_field, 8>>,
-               peg::sor<comment, peg::star<peg::space>>, peg::eolf> {};
+               peg::sor<comment, peg::star<peg::space>>, peg::eolf>,
+      CAEParser::astnode_tag {};
 
 struct k_card_10_field_line
     : peg::seq<peg::rep<8, k_size_field<k_card_field, 10>>,
-               peg::sor<comment, peg::star<peg::space>>, peg::eolf> {};
+               peg::sor<comment, peg::star<peg::space>>, peg::eolf>,
+      CAEParser::astnode_tag {};
 
 template <typename CardLine>
 struct k_card_content {
@@ -28,7 +31,7 @@ struct k_card_content {
             template <typename...> class Action,
             template <typename...> class Control, typename ParseInput,
             typename ParseState, typename KParseState, typename... States>
-  [[nodiscard]] static bool match(ParseInput& in, ParseState& stat,
+  [[nodiscard]] static bool match(ParseInput& in, ParseState& state,
                                   KParseState& kstate, States&&... st) {
     bool result = true;
     auto marker = in.template mark<M>();
@@ -37,7 +40,7 @@ struct k_card_content {
     if (kstate._has_id) {
       result = result &&
                peg::pad<id_line, comment_line>::template match<
-                   A, m_t::next_rewind_mode, Action, Control>(in, stat, st...);
+                   A, m_t::next_rewind_mode, Action, Control>(in, state, st...);
     }
     if (!result) {
       return marker(false);
@@ -45,7 +48,7 @@ struct k_card_content {
     if (kstate._has_title) {
       result = result &&
                peg::pad<title_line, comment_line>::template match<
-                   A, m_t::next_rewind_mode, Action, Control>(in, stat, st...);
+                   A, m_t::next_rewind_mode, Action, Control>(in, state, st...);
     }
     if (!result) {
       return marker(false);
@@ -54,12 +57,9 @@ struct k_card_content {
     result = result &
              peg::until<k_card_end, peg::sor<CardLine, comment_line>>::
                  template match<A, m_t::next_rewind_mode, Action, Control>(
-                     in, stat, kstate, st...);
+                     in, state, kstate, st...);
     return marker(result);
   }
 };
-
-struct k_card_content_10_field
-    : peg::until<k_card_end, peg::sor<k_card_10_field_line, comment_line>> {};
 
 }  // namespace K
