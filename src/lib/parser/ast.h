@@ -25,6 +25,7 @@ class CAEPARSER_API ASTNode : public std::enable_shared_from_this<ASTNode> {
       typename std::vector<std::shared_ptr<ASTNode>>::const_iterator;
 
   void setType(const std::type_index&);
+  std::type_index type() const;
   void addChildren(std::shared_ptr<ASTNode> node);
   /**
    * @brief get node's parent, maybe nullptr
@@ -42,6 +43,8 @@ class CAEPARSER_API ASTNode : public std::enable_shared_from_this<ASTNode> {
 
   size_t childreSize() const;
 
+  std::shared_ptr<ASTNode> at(uint64_t idx) const;
+
   /**
    * @brief check node grammar type
    *
@@ -54,11 +57,7 @@ class CAEPARSER_API ASTNode : public std::enable_shared_from_this<ASTNode> {
     return typeid(T) == _node_type;
   }
 
-  CAEPARSER_API friend std::ostream& operator<<(
-      std::ostream& os, const std::shared_ptr<ASTNode> node);
-
- public:
-  void streamOut(std::ostream& os, uint64_t indent_level) const;
+  // void streamOut(std::ostream& os, uint64_t indent_level) const;
 
   std::string _content;
   Position _start;
@@ -70,5 +69,8 @@ class CAEPARSER_API ASTNode : public std::enable_shared_from_this<ASTNode> {
   std::vector<std::shared_ptr<ASTNode>> _children;
   std::weak_ptr<ASTNode> _parent;
 };
+
+CAEPARSER_API std::ostream& operator<<(std::ostream& os,
+                                       const std::shared_ptr<ASTNode> node);
 
 }  // namespace CAEParser

@@ -4,6 +4,8 @@ namespace CAEParser {
 
 void ASTNode::setType(const std::type_index& t) { _node_type = t; }
 
+std::type_index ASTNode::type() const { return _node_type; }
+
 void ASTNode::addChildren(std::shared_ptr<ASTNode> node) {
   _children.push_back(node);
   node->_parent = weak_from_this();
@@ -25,26 +27,32 @@ ASTNode::const_iterator ASTNode::end() const { return _children.end(); }
 
 size_t ASTNode::childreSize() const { return _children.size(); }
 
+std::shared_ptr<ASTNode> ASTNode::at(uint64_t idx) const {
+  return _children.at(idx);
+}
+
+// ----------------------------------------------------------------------------
+void streamOutHelper(std::ostream& os, const std::shared_ptr<ASTNode> node,
+                     uint64_t indent_level) {
+  os << std::string(indent_level * 2, ' ');
+  auto type_id = node->type();
+  if (std::type_index(typeid(void)) == type_id && indent_level == 0) {
+    os << "ROOT";
+  } else {
+    os << demangle_type_index(type_id);
+  }
+  os << "(" << node->_start._line << ":" << node->_start._colum << "-"
+     << node->_end._line << ":" << node->_end._colum << ")" << ":"
+     << node->_content;
+  for (auto&& c : *node) {
+    os << "\n";
+    streamOutHelper(os, c, indent_level + 1);
+  }
+}
 std::ostream& operator<<(std::ostream& os,
                          const std::shared_ptr<ASTNode> node) {
-  node->streamOut(os, 0);
+  streamOutHelper(os, node, 0);
   return os;
 }
 
-void ASTNode::streamOut(std::ostream& os, uint64_t indent_level) const {
-  os << std::string(indent_level * 2, ' ');
-  if (std::type_index(typeid(void)) == _node_type && indent_level == 0) {
-    os << "ROOT";
-  } else {
-    os << demangle_type_index(_node_type);
-  }
-  os << "(" << _start._line << ":" << _start._colum << "-" << _end._line << ":"
-     << _end._colum << ")" << ":" << _content;
-  if (!_children.empty()) {
-    for (auto&& c : _children) {
-      os << "\n";
-      c->streamOut(os, indent_level + 1);
-    }
-  }
-}
 }  // namespace CAEParser

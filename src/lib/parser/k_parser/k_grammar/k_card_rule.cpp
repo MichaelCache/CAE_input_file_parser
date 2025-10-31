@@ -8,7 +8,7 @@ std::unordered_map<std::string_view, std::shared_ptr<KCardPatternBase>>
     k_card_rule{
         {"*AIRBAG",
          std::shared_ptr<KCardPatternBase>(
-             new KCardPattern<k_card_content<k_card_8_field_line>>(
+             new KCardPattern<k_card_content<k_card_content_8_field>>(
                  "*AIRBAG",
                  {KOptions(
                       {"SIMPLE_PRESSURE_VOLUME", "SIMPLE_AIRBAG_MODEL",
@@ -18,10 +18,10 @@ std::unordered_map<std::string_view, std::shared_ptr<KCardPatternBase>>
                        "HYBRID_CHEMKIN", "FLUID_AND_GAS"},
                       true),
                   {"POP"},
-                  {" CM "},
-                  {" ID "}}))},
+                  {"CM"},
+                  {"ID"}}))},
         {"*CONTROL_TERMINATION",
          std::shared_ptr<KCardPatternBase>(
-             new KCardPattern<k_card_content<k_card_10_field_line>>(
+             new KCardPattern<k_card_content<k_card_content_8_field>>(
                  "*CONTROL_TERMINATION"))}};
 }  // namespace K
