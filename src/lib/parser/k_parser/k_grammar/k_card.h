@@ -54,7 +54,7 @@ struct k_card_name_option : CAEParser::astnode_tag {
           peg::memory_input tmp_card_name(
               in.begin(), in.current() + card_name.size(), in.source());
           tmp_card_name.iterator() = in.iterator();
-          Control<k_card_name>::template match<A, M, Action, Control>(
+          auto res = Control<k_card_name>::template match<A, M, Action, Control>(
               tmp_card_name, state);
           in.bump(card_name.size());
           auto options = pattern->options(card_name_option);

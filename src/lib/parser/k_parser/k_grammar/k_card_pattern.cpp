@@ -52,8 +52,11 @@ bool KCardPatternBase::match(const std::string& s) {
     if (res) {
       _card_name_option_cache = s;
       return true;
+    } else {
+      return false;
     }
   } else {
+    // s == _card_name_option_cache and _card_name_option_cache not empty
     return !_card_name_option_cache.empty();
   }
 }

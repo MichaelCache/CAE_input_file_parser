@@ -44,7 +44,7 @@ TEST_CASE("k_card_name_option") {
   CHECK(peg::parse<K::k_card_name_option, peg::nothing, CAEParser::ParseToTree>(
       peg::memory_input("*AIRBAG_SIMPLE_AIRBAG_MODEL_POP", ""), state,
       K::KParseState()));
-  // std::cout << state._ast << std::endl;
+  std::cout << state._ast << std::endl;
   CHECK_EQ(state._ast->childreSize(), 1);
   auto card_name_option_node = state._ast->at(0);
   CHECK_EQ(card_name_option_node->childreSize(), 3);
@@ -61,7 +61,7 @@ $   endtim    endcyc     dtmin    endeng    endmas
       10.0         0       0.0       0.01.000000E8)",
                         ""),
       state, K::KParseState()));
-  // std::cout << state._ast << std::endl;
+  std::cout << state._ast << std::endl;
   CHECK_EQ(state._ast->childreSize(), 1);
   auto card_node = state._ast->at(0);
   // 2 children: card name option and card line
