@@ -35,6 +35,8 @@ class KCardPatternBase {
   std::regex _pattern;
   bool (*_match_func)(peg::memory_input<>&, CAEParser::ParseState&,
                       K::KParseState&) = nullptr;
+  bool (*_match_func_trace)(peg::memory_input<>&, CAEParser::ParseState&,
+                            K::KParseState&) = nullptr;
 
  private:
   //  cache card name option and regex result impove performance
@@ -49,18 +51,16 @@ class KCardPattern : public KCardPatternBase {
                const std::initializer_list<KOptions>& options = {})
       : KCardPatternBase(card_name, options) {
     // explicit instantiation Rule::template match function
-    if (CAEParser::RuntimeConfig::ins()._trace_parser) {
-      _match_func = &Rule::template match<
-          peg::apply_mode::action, peg::rewind_mode::active, peg::nothing,
-          CAEParser::TraceParseToTree, peg::memory_input<>&,
-          CAEParser::ParseState&, K::KParseState&>;
-    } else {
-      _match_func =
-          &Rule::template match<peg::apply_mode::action,
-                                peg::rewind_mode::active, peg::nothing,
-                                CAEParser::ParseToTree, peg::memory_input<>&,
-                                CAEParser::ParseState&, K::KParseState&>;
-    }
+    _match_func_trace =
+        &Rule::template match<peg::apply_mode::action, peg::rewind_mode::active,
+                              peg::nothing, CAEParser::TraceParseToTree,
+                              peg::memory_input<>&, CAEParser::ParseState&,
+                              K::KParseState&>;
+    _match_func =
+        &Rule::template match<peg::apply_mode::action, peg::rewind_mode::active,
+                              peg::nothing, CAEParser::ParseToTree,
+                              peg::memory_input<>&, CAEParser::ParseState&,
+                              K::KParseState&>;
   }
 };
 

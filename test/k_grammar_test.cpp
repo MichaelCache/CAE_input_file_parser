@@ -80,3 +80,33 @@ $   endtim    endcyc     dtmin    endeng    endmas
   CHECK_EQ(card_line_node->at(6)->_content, "");
   CHECK_EQ(card_line_node->at(7)->_content, "");
 }
+
+TEST_CASE("k_card") {
+  CAEParser::ParseState state;
+  CHECK(peg::parse<K::k_grammar, peg::nothing, CAEParser::ParseToTree>(
+      peg::memory_input(R"(*KEYWORD
+*CONTROL_TERMINATION
+$   endtim    endcyc     dtmin    endeng    endmas
+      10.0         0       0.0       0.01.000000E8
+*END)",
+                        ""),
+      state, K::KParseState()));
+  std::cout << state._ast << std::endl;
+  CHECK_EQ(state._ast->childreSize(), 1);
+  auto card_node = state._ast->at(0);
+  // 2 children: card name option and card line
+  CHECK_EQ(card_node->childreSize(), 2);
+  auto card_name_option_node = card_node->at(0);
+  CHECK_EQ(card_name_option_node->childreSize(), 1);
+  CHECK_EQ(card_name_option_node->at(0)->_content, "*CONTROL_TERMINATION");
+  auto card_line_node = card_node->at(1);
+  CHECK_EQ(card_line_node->childreSize(), 8);
+  CHECK_EQ(card_line_node->at(0)->_content, "10.0");
+  CHECK_EQ(card_line_node->at(1)->_content, "0");
+  CHECK_EQ(card_line_node->at(2)->_content, "0.0");
+  CHECK_EQ(card_line_node->at(3)->_content, "0.0");
+  CHECK_EQ(card_line_node->at(4)->_content, "1.000000E8");
+  CHECK_EQ(card_line_node->at(5)->_content, "");
+  CHECK_EQ(card_line_node->at(6)->_content, "");
+  CHECK_EQ(card_line_node->at(7)->_content, "");
+}

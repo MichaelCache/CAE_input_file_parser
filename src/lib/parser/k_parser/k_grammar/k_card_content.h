@@ -13,12 +13,12 @@ namespace peg = tao::pegtl;
 
 struct k_card_8_field_line
     : peg::seq<peg::rep<8, k_size_field<k_card_field, 10>>,
-               peg::sor<comment, peg::star<peg::space>>, peg::eolf>,
+               peg::star<peg::blank>, peg::eolf>,
       CAEParser::astnode_tag {};
 
 struct k_card_10_field_line
     : peg::seq<peg::rep<10, k_size_field<k_card_field, 8>>,
-               peg::sor<comment, peg::star<peg::space>>, peg::eolf>,
+               peg::star<peg::blank>, peg::eolf>,
       CAEParser::astnode_tag {};
 
 struct k_card_content_8_field
@@ -44,19 +44,19 @@ struct k_card_content {
 
     if (kstate._has_id) {
       result = result &&
-               peg::pad<IdLine, comment_line>::template match<
+               Control<peg::pad<IdLine, comment_line>>::template match<
                    A, m_t::next_rewind_mode, Action, Control>(in, state, st...);
     } else if (kstate._has_title) {
       result = result &&
-               peg::pad<TitleLine, comment_line>::template match<
+               Control<peg::pad<TitleLine, comment_line>>::template match<
                    A, m_t::next_rewind_mode, Action, Control>(in, state, st...);
     }
 
     if (result) {
       result =
           result &
-          CardLine::template match<A, m_t::next_rewind_mode, Action, Control>(
-              in, state, kstate, st...);
+          Control<CardLine>::template match<A, m_t::next_rewind_mode, Action,
+                                            Control>(in, state, kstate, st...);
     }
     return marker(result);
   }

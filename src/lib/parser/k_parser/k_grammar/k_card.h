@@ -54,8 +54,9 @@ struct k_card_name_option : CAEParser::astnode_tag {
           peg::memory_input tmp_card_name(
               in.begin(), in.current() + card_name.size(), in.source());
           tmp_card_name.iterator() = in.iterator();
-          auto res = Control<k_card_name>::template match<A, M, Action, Control>(
-              tmp_card_name, state);
+          auto res =
+              Control<k_card_name>::template match<A, M, Action, Control>(
+                  tmp_card_name, state);
           in.bump(card_name.size());
           auto options = pattern->options(card_name_option);
           for (auto& i : options) {
@@ -75,6 +76,7 @@ struct k_card_name_option : CAEParser::astnode_tag {
           }
 
           kstate._match_func = pattern->_match_func;
+          kstate._match_func_trace = pattern->_match_func_trace;
           return true;
         }
       }
@@ -110,7 +112,11 @@ struct k_card : public CAEParser::astnode_tag {
                  template match<A, m_t::next_rewind_mode, Action, Control>(
                      in, state, kstate, st...);
     if (result) {
-      result = result && kstate._match_func(in, state, kstate);
+      if (CAEParser::RuntimeConfig::ins()._trace_parser) {
+        result = result && kstate._match_func_trace(in, state, kstate);
+      } else {
+        result = result && kstate._match_func(in, state, kstate);
+      }
       if (result) {
         return marker(true);
       } else {

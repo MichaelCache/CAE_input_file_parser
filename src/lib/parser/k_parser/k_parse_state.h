@@ -19,6 +19,8 @@ struct KParseState {
   bool _has_id{false};
   bool (*_match_func)(peg::memory_input<>&, CAEParser::ParseState&,
                       K::KParseState&);
+  bool (*_match_func_trace)(peg::memory_input<>&, CAEParser::ParseState&,
+                            K::KParseState&);
 };
 
 }  // namespace K
