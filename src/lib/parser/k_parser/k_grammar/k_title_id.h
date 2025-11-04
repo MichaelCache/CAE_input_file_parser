@@ -3,12 +3,13 @@
 #include "k_size_field.h"
 #include "parser/base_grammar/int_num.h"
 #include "parser/control_tag.h"
+#include "parser/k_parser/k_control_tag.h"
 #include "tao/pegtl.hpp"
 
 namespace K {
 namespace peg = tao::pegtl;
 
-struct title : public CAEParser::savenode_tag {
+struct title : public CAEParser::savenode_tag, public trim_tag {
   using rule_t = title;
   using subs_t = peg::empty_list;
 
@@ -29,13 +30,7 @@ struct title : public CAEParser::savenode_tag {
     // get title line
     std::string_view title_sv(in.current(), cur);
     // title can be emtpy
-    if (title_sv.empty()) {
-      return true;
-    }
-    auto end_it = std::find_if(title_sv.rbegin(), title_sv.rend(),
-                               [](const char& c) { return c != ' '; });
-    int count = std::distance(end_it, title_sv.rend());
-    in.bump(count);
+    in.bump(title_sv.size());
     return true;
   }
 };

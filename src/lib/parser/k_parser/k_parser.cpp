@@ -4,7 +4,7 @@
 
 #include "config/runtime_config.h"
 #include "k_grammar.h"
-#include "parser/parse_control.h"
+#include "parser/k_parser/k_parse_control.h"
 #include "parser/parse_state.h"
 #include "tao/pegtl.hpp"
 #include "tao/pegtl/contrib/analyze.hpp"
@@ -33,7 +33,7 @@ KParser::parse(const std::string& content, const std::string& fn) {
   }
 
   CAEParser::ParseState state;
-  peg::parse<k_grammar, peg::nothing, CAEParser::ParseToTree>(input, state);
+  peg::parse<k_grammar, peg::nothing, KParseControl>(input, state);
   return std::make_tuple(state._ast, state._not_parsed);
 }
 
@@ -56,7 +56,7 @@ KParser::parseFile(const std::string& fn) {
   }
 
   CAEParser::ParseState state;
-  peg::parse<k_grammar, peg::nothing, CAEParser::ParseToTree>(input, state);
+  peg::parse<k_grammar, peg::nothing, KParseControl>(input, state);
   return std::make_tuple(state._ast, state._not_parsed);
 }
 

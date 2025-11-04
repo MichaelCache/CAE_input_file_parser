@@ -5,14 +5,20 @@
 
 #include "cut_options.h"
 #include "k_card_rule.h"
+#include "parser/k_parser/k_control_tag.h"
 #include "parser/k_parser/k_parse_state.h"
 #include "tao/pegtl.hpp"
+
 
 namespace K {
 namespace peg = tao::pegtl;
 
-struct k_card_name : peg::plus<peg::any>, CAEParser::savenode_tag {};
-struct k_card_option : peg::plus<peg::any>, CAEParser::savenode_tag {};
+struct k_card_name : peg::plus<peg::any>,
+                     CAEParser::savenode_tag,
+                     to_upper_tag {};
+struct k_card_option : peg::plus<peg::any>,
+                       CAEParser::savenode_tag,
+                       to_upper_tag {};
 
 struct k_card_end
     : peg::sor<peg::seq<peg::bol, peg::at<peg::one<'*'>>>, peg::eof> {};

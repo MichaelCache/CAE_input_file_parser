@@ -3,11 +3,12 @@
 #include <regex>
 
 #include "config/runtime_config.h"
+#include "parser/k_parser/k_parse_control.h"
 #include "parser/k_parser/k_parse_state.h"
-#include "parser/parse_control.h"
 #include "parser/parse_state.h"
 #include "parser/trace_control.h"
 #include "tao/pegtl.hpp"
+
 
 namespace K {
 namespace peg = tao::pegtl;
@@ -58,9 +59,8 @@ class KCardPattern : public KCardPatternBase {
                               K::KParseState&>;
     _match_func =
         &Rule::template match<peg::apply_mode::action, peg::rewind_mode::active,
-                              peg::nothing, CAEParser::ParseToTree,
-                              peg::memory_input<>&, CAEParser::ParseState&,
-                              K::KParseState&>;
+                              peg::nothing, KParseControl, peg::memory_input<>&,
+                              CAEParser::ParseState&, K::KParseState&>;
   }
 };
 

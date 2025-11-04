@@ -7,6 +7,7 @@
 #include "parser/base_grammar/int_num.h"
 #include "parser/k_parser/k_grammar/k_card_field.h"
 #include "parser/k_parser/k_grammar/k_size_field.h"
+#include "parser/k_parser/k_grammar/k_title_id.h"
 #include "parser/trace_control.h"
 #include "tao/pegtl/parse.hpp"
 
@@ -28,6 +29,14 @@ TEST_CASE("k_special_sci_num") {
   CHECK(peg::parse<K::k_sp_sci_num>(peg::memory_input(".2+3", "")));
 }
 
+TEST_CASE("k_trim_title") {
+  CAEParser::ParseState state;
+  CHECK(peg::parse<K::title_line, peg::nothing, K::KParseControl>(
+      peg::memory_input("   this is a test trim text    ", ""), state));
+  std::cout << state._ast << std::endl;
+  CHECK_EQ(state._ast->at(0)->_content, "this is a test trim text");
+}
+
 TEST_CASE("k_card_name_option") {
   CHECK_FALSE(
       peg::parse<K::k_card_name_option, peg::nothing, CAEParser::SaveToState>(
@@ -41,8 +50,8 @@ TEST_CASE("k_card_name_option") {
       peg::memory_input("*AIRBAG_SIMPLE_AIRBAG_MODEL        ", ""),
       CAEParser::ParseState(), K::KParseState()));
   CAEParser::ParseState state;
-  CHECK(peg::parse<K::k_card_name_option, peg::nothing, CAEParser::ParseToTree>(
-      peg::memory_input("*AIRBAG_SIMPLE_AIRBAG_MODEL_POP", ""), state,
+  CHECK(peg::parse<K::k_card_name_option, peg::nothing, K::KParseControl>(
+      peg::memory_input("*airbag_SIMPLE_AIRBAG_MODEL_POP", ""), state,
       K::KParseState()));
   std::cout << state._ast << std::endl;
   CHECK_EQ(state._ast->childreSize(), 1);
