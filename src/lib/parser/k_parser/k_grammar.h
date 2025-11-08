@@ -11,8 +11,8 @@ namespace peg = tao::pegtl;
 
 struct k_grammar
     : peg::seq<
-          peg::pad<peg::star<peg::sor<empty_line, comment_line>>, k_keyword>,
-          peg::until<peg::sor<k_end, peg::eolf>,
+          peg::pad<k_keyword, peg::sor<empty_line, comment_line>>,
+          peg::until<peg::sor<k_end, peg::eof>,
                      peg::sor<k_card, comment_line, empty_line, not_parsed>>> {
 };
 

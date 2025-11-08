@@ -62,12 +62,16 @@ std::ostream& operator<<(std::ostream& os, const NotParsedRange not_parsed) {
                          std::make_format_args(line_content.first))
          << ":";
       uint64_t last_col = 1;
+      bool end_line = false;
       for (auto&& content : line_content.second) {
         os << std::string(content._start._colum - last_col, ' ')
            << content._content;
         last_col = content._end._colum;
+        if (content._content.ends_with('\n')) {
+          end_line = true;
+        }
       }
-      os << std::endl;
+      if (!end_line) os << std::endl;
     }
 
     os << "--------------------------------------------------------------------"
