@@ -11,6 +11,12 @@
 namespace K {
 namespace peg = tao::pegtl;
 
+struct k_card_8_3x16_char_field_line
+    : peg::seq<k_size_field<k_card_field, 8>,
+               peg::rep<3, k_size_field<k_card_field, 16>>,
+               peg::star<peg::blank>, peg::eolf>,
+      CAEParser::astnode_tag {};
+
 struct k_card_8_field_line
     : peg::seq<peg::rep<8, k_size_field<k_card_field, 10>>,
                peg::star<peg::blank>, peg::eolf>,
@@ -54,7 +60,7 @@ struct k_card_content {
 
     if (result) {
       result =
-          result &
+          result &&
           Control<CardLine>::template match<A, m_t::next_rewind_mode, Action,
                                             Control>(in, state, kstate, st...);
     }

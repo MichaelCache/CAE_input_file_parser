@@ -43,6 +43,9 @@ KCardPatternBase::KCardPatternBase(
   for (auto&& op : options) {
     regex += op._regex_str;
   }
+  // most of k card has tail ID/TITLE options
+  // add tail ID/TITLE option as default
+  regex += "(_ID|_TITLE){0,1}";
   _pattern = regex;
 }
 

@@ -33,8 +33,8 @@ TEST_CASE("k_trim_title") {
   CAEParser::ParseState state;
   CHECK(peg::parse<K::title_line, peg::nothing, K::KParseControl>(
       peg::memory_input("   this is a test trim text    ", ""), state));
-  std::cout << state._ast << std::endl;
-  CHECK_EQ(state._ast->at(0)->_content, "this is a test trim text");
+  // std::cout << state._ast << std::endl;
+  CHECK_EQ(state._ast->at(0)->at(0)->_content, "this is a test trim text");
 }
 
 TEST_CASE("k_card_name_option") {
@@ -53,7 +53,7 @@ TEST_CASE("k_card_name_option") {
   CHECK(peg::parse<K::k_card_name_option, peg::nothing, K::KParseControl>(
       peg::memory_input("*airbag_SIMPLE_AIRBAG_MODEL_POP", ""), state,
       K::KParseState()));
-  std::cout << state._ast << std::endl;
+  // std::cout << state._ast << std::endl;
   CHECK_EQ(state._ast->childreSize(), 1);
   auto card_name_option_node = state._ast->at(0);
   CHECK_EQ(card_name_option_node->childreSize(), 3);
@@ -64,13 +64,13 @@ TEST_CASE("k_card_name_option") {
 
 TEST_CASE("k_card") {
   CAEParser::ParseState state;
-  CHECK(peg::parse<K::k_card, peg::nothing, CAEParser::ParseToTree>(
+  CHECK(peg::parse<K::k_card, peg::nothing, K::KParseControl>(
       peg::memory_input(R"(*CONTROL_TERMINATION
 $   endtim    endcyc     dtmin    endeng    endmas
       10.0         0       0.0       0.01.000000E8)",
                         ""),
       state, K::KParseState()));
-  std::cout << state._ast << std::endl;
+  // std::cout << state._ast << std::endl;
   CHECK_EQ(state._ast->childreSize(), 1);
   auto card_node = state._ast->at(0);
   // 2 children: card name option and card line
@@ -90,9 +90,9 @@ $   endtim    endcyc     dtmin    endeng    endmas
   CHECK_EQ(card_line_node->at(7)->_content, "");
 }
 
-TEST_CASE("k_card") {
+TEST_CASE("k_file") {
   CAEParser::ParseState state;
-  CHECK(peg::parse<K::k_grammar, peg::nothing, CAEParser::ParseToTree>(
+  CHECK(peg::parse<K::k_grammar, peg::nothing, K::KParseControl>(
       peg::memory_input(R"(*KEYWORD
 *CONTROL_TERMINATION
 $   endtim    endcyc     dtmin    endeng    endmas
@@ -100,7 +100,7 @@ $   endtim    endcyc     dtmin    endeng    endmas
 *END)",
                         ""),
       state, K::KParseState()));
-  std::cout << state._ast << std::endl;
+  // std::cout << state._ast << std::endl;
   CHECK_EQ(state._ast->childreSize(), 1);
   auto card_node = state._ast->at(0);
   // 2 children: card name option and card line
@@ -118,4 +118,79 @@ $   endtim    endcyc     dtmin    endeng    endmas
   CHECK_EQ(card_line_node->at(5)->_content, "");
   CHECK_EQ(card_line_node->at(6)->_content, "");
   CHECK_EQ(card_line_node->at(7)->_content, "");
+}
+
+
+TEST_CASE("AIRBAG_PARTICLE") {
+  CAEParser::ParseState state;
+  CHECK(peg::parse<K::k_grammar, peg::nothing, K::KParseControl>(
+      peg::memory_input(R"(*KEYWORD
+*AIRBAG_PARTICLE_TITLE
+$    BAGID                                                               HEADING
+      10   test_name
+$     SID1    STYPE1      SID2    STYPE2     BLOCK    NPDATA      FRIC      IRPD
+        1         2       3         3           4       0         0.0         3
+*END)",
+                        ""),
+      state, K::KParseState()));
+  CHECK_EQ(state._ast->childreSize(), 1);
+  auto card_node = state._ast->at(0);
+  // 2 children: card name option and card line
+  CHECK_EQ(card_node->childreSize(), 3);
+  auto card_name_option_node = card_node->at(0);
+  CHECK_EQ(card_name_option_node->childreSize(), 2);
+  CHECK_EQ(card_name_option_node->at(0)->_content, "*AIRBAG_PARTICLE");
+  CHECK_EQ(card_name_option_node->at(1)->_content, "TITLE");
+  auto id_line =  card_node->at(1);
+  CHECK_EQ(id_line->childreSize(), 2);
+  CHECK_EQ(id_line->at(0)->_content, "10");
+  CHECK_EQ(id_line->at(1)->_content, "test_name");
+  auto card_line_node = card_node->at(2);
+  CHECK_EQ(card_line_node->childreSize(), 8);
+  CHECK_EQ(card_line_node->at(0)->_content, "1");
+  CHECK_EQ(card_line_node->at(1)->_content, "2");
+  CHECK_EQ(card_line_node->at(2)->_content, "3");
+  CHECK_EQ(card_line_node->at(3)->_content, "3");
+  CHECK_EQ(card_line_node->at(4)->_content, "4");
+  CHECK_EQ(card_line_node->at(5)->_content, "0");
+  CHECK_EQ(card_line_node->at(6)->_content, "0.0");
+  CHECK_EQ(card_line_node->at(7)->_content, "3");
+}
+
+TEST_CASE("AIRBAG_PARTICLE") {
+  CAEParser::ParseState state;
+  CHECK(peg::parse<K::k_grammar, peg::nothing, K::KParseControl>(
+      peg::memory_input(R"(*KEYWORD
+*AIRBAG_REFERENCE_GEOMETRY_ID
+$       ID        SX        SY        SZ      NIDO      IOUT
+        3        1.0       1.0       1.0        2         0
+$    NID               X               Y               Z
+       1            2.0              3.3            3.9
+*END)",
+                        ""),
+      state, K::KParseState()));
+  CHECK_EQ(state._ast->childreSize(), 1);
+  auto card_node = state._ast->at(0);
+  // 2 children: card name option and card line
+  CHECK_EQ(card_node->childreSize(), 3);
+  auto card_name_option_node = card_node->at(0);
+  CHECK_EQ(card_name_option_node->childreSize(), 2);
+  CHECK_EQ(card_name_option_node->at(0)->_content, "*AIRBAG_REFERENCE_GEOMETRY");
+  CHECK_EQ(card_name_option_node->at(1)->_content, "ID");
+  auto id_line =  card_node->at(1);
+  CHECK_EQ(id_line->childreSize(), 8);
+  CHECK_EQ(id_line->at(0)->_content, "3");
+  CHECK_EQ(id_line->at(1)->_content, "1.0");
+  CHECK_EQ(id_line->at(2)->_content, "1.0");
+  CHECK_EQ(id_line->at(3)->_content, "1.0");
+  CHECK_EQ(id_line->at(4)->_content, "2");
+  CHECK_EQ(id_line->at(5)->_content, "0");
+  CHECK_EQ(id_line->at(6)->_content, "");
+  CHECK_EQ(id_line->at(7)->_content, "");
+  auto card_line_node = card_node->at(2);
+  CHECK_EQ(card_line_node->childreSize(), 4);
+  CHECK_EQ(card_line_node->at(0)->_content, "1");
+  CHECK_EQ(card_line_node->at(1)->_content, "2.0");
+  CHECK_EQ(card_line_node->at(2)->_content, "3.3");
+  CHECK_EQ(card_line_node->at(3)->_content, "3.9");
 }
