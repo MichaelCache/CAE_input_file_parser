@@ -3,6 +3,7 @@
 #include "k_card_content.h"
 #include "special_card_content/airbag_particle.h"
 #include "special_card_content/airbag_reference_geometry_content.h"
+#include "special_card_content/airbag_shell_reference_geometry_content.h"
 
 namespace K {
 
@@ -50,6 +51,12 @@ std::unordered_map<std::string_view, std::shared_ptr<KCardPatternBase>>
              new KCardPattern<k_card_content<airbag_reference_geometry_content,
                                              title_line, peg::success>>(
                  "*AIRBAG_REFERENCE_GEOMETRY", {{"BIRTH"}, {"RDT"}}))},
+        {"*AIRBAG_SHELL_REFERENCE_GEOMETRY",
+         std::shared_ptr<KCardPatternBase>(
+             new KCardPattern<
+                 k_card_content<airbag_shell_reference_geometry_content,
+                                title_line, peg::success>>(
+                 "*AIRBAG_SHELL_REFERENCE_GEOMETRY", {{"RDT"}}))},
         {"*CONTROL_TERMINATION",
          std::shared_ptr<KCardPatternBase>(
              new KCardPattern<k_card_content<k_card_content_8_field>>(
