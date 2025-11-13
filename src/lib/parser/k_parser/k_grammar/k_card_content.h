@@ -10,7 +10,7 @@
 
 namespace K {
 namespace peg = tao::pegtl;
-
+// card line
 struct k_card_8_3x16_char_field_line
     : peg::seq<k_size_field<k_card_field, 8>,
                peg::rep<3, k_size_field<k_card_field, 16>>,
@@ -26,7 +26,7 @@ struct k_card_10_field_line
     : peg::seq<peg::rep<10, k_size_field<k_card_field, 8>>,
                peg::star<peg::blank>, peg::eolf>,
       CAEParser::astnode_tag {};
-
+// card content
 struct k_card_content_8_field
     : peg::until<k_card_end, peg::sor<k_card_8_field_line, comment_line>> {};
 struct k_card_content_10_field

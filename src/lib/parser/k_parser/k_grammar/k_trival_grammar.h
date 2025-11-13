@@ -14,6 +14,14 @@ struct comment_line : peg::seq<peg::bol, comment, peg::eolf> {};
 
 struct k_keyword : peg::seq<peg::bol, EXTEND_PEGTL_IKEYWORD("*KEYWORD"),
                             peg::until<peg::eolf>> {};
+
+struct k_title : peg::until<peg::at<peg::eolf>>,
+                 trim_tag,
+                 CAEParser::savenode_tag {};
+struct k_title_card
+    : peg::seq<peg::bol, EXTEND_PEGTL_IKEYWORD("*TITLE"), peg::until<peg::eolf>,
+               peg::star<comment_line>, k_title, peg::eolf>,
+      CAEParser::astnode_tag {};
 struct k_end
     : peg::seq<peg::bol, EXTEND_PEGTL_IKEYWORD("*END"), peg::until<peg::eolf>> {
 };
