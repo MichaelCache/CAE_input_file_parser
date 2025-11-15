@@ -22,9 +22,20 @@ std::shared_ptr<ASTNode> ASTNode::parent() const {
 ASTNode::iterator ASTNode::begin() { return _children.begin(); }
 ASTNode::iterator ASTNode::end() { return _children.end(); }
 
+ASTNode::reverse_iterator ASTNode::rbegin() { return _children.rbegin(); }
+ASTNode::reverse_iterator ASTNode::rend() { return _children.rend(); }
+
 ASTNode::const_iterator ASTNode::begin() const { return _children.begin(); }
 ASTNode::const_iterator ASTNode::end() const { return _children.end(); }
 
+ASTNode::const_reverse_iterator ASTNode::rbegin() const {
+  return _children.rbegin();
+}
+ASTNode::const_reverse_iterator ASTNode::rend() const {
+  return _children.rend();
+}
+
+bool ASTNode::childEmpty() const { return _children.empty(); }
 size_t ASTNode::childreSize() const { return _children.size(); }
 
 std::shared_ptr<ASTNode> ASTNode::at(uint64_t idx) const {

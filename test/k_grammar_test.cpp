@@ -5,6 +5,7 @@
 
 #include "doctest.h"
 #include "parser/base_grammar/int_num.h"
+#include "parser/k_parser/k_grammar/k_card_content.h"
 #include "parser/k_parser/k_grammar/k_card_field.h"
 #include "parser/k_parser/k_grammar/k_size_field.h"
 #include "parser/k_parser/k_grammar/k_title_id.h"
@@ -60,6 +61,23 @@ TEST_CASE("k_card_name_option") {
   CHECK_EQ(card_name_option_node->at(0)->_content, "*AIRBAG");
   CHECK_EQ(card_name_option_node->at(1)->_content, "SIMPLE_AIRBAG_MODEL");
   CHECK_EQ(card_name_option_node->at(2)->_content, "POP");
+}
+
+TEST_CASE("not_all_empty_field") {
+  CAEParser::ParseState state;
+  CHECK(peg::parse<
+        peg::pad<K::k_card_content_8_field_not_all_empty, K::empty_line>,
+        peg::nothing, K::KParseControl>(peg::memory_input(R"(
+$   endtim    endcyc     dtmin    endeng    endmas
+      10.0         0       0.0       0.01.000000E8
+      
+      10.0         0       0.0       0.01.000000E8
+      
+      )",
+                                                          ""),
+                                        state, K::KParseState()));
+  // empty line won't be card line
+  CHECK_EQ(state._ast->childreSize(), 2);
 }
 
 TEST_CASE("k_card") {
@@ -120,7 +138,6 @@ $   endtim    endcyc     dtmin    endeng    endmas
   CHECK_EQ(card_line_node->at(7)->_content, "");
 }
 
-
 TEST_CASE("AIRBAG_PARTICLE") {
   CAEParser::ParseState state;
   CHECK(peg::parse<K::k_grammar, peg::nothing, K::KParseControl>(
@@ -141,7 +158,7 @@ $     SID1    STYPE1      SID2    STYPE2     BLOCK    NPDATA      FRIC      IRPD
   CHECK_EQ(card_name_option_node->childreSize(), 2);
   CHECK_EQ(card_name_option_node->at(0)->_content, "*AIRBAG_PARTICLE");
   CHECK_EQ(card_name_option_node->at(1)->_content, "TITLE");
-  auto id_line =  card_node->at(1);
+  auto id_line = card_node->at(1);
   CHECK_EQ(id_line->childreSize(), 2);
   CHECK_EQ(id_line->at(0)->_content, "10");
   CHECK_EQ(id_line->at(1)->_content, "test_name");
@@ -175,9 +192,10 @@ $    NID               X               Y               Z
   CHECK_EQ(card_node->childreSize(), 3);
   auto card_name_option_node = card_node->at(0);
   CHECK_EQ(card_name_option_node->childreSize(), 2);
-  CHECK_EQ(card_name_option_node->at(0)->_content, "*AIRBAG_REFERENCE_GEOMETRY");
+  CHECK_EQ(card_name_option_node->at(0)->_content,
+           "*AIRBAG_REFERENCE_GEOMETRY");
   CHECK_EQ(card_name_option_node->at(1)->_content, "ID");
-  auto id_line =  card_node->at(1);
+  auto id_line = card_node->at(1);
   CHECK_EQ(id_line->childreSize(), 8);
   CHECK_EQ(id_line->at(0)->_content, "3");
   CHECK_EQ(id_line->at(1)->_content, "1.0");

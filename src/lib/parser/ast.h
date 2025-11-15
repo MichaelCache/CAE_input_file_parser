@@ -21,8 +21,12 @@ class CAEPARSER_API ASTNode : public std::enable_shared_from_this<ASTNode> {
   ~ASTNode() = default;
 
   using iterator = typename std::vector<std::shared_ptr<ASTNode>>::iterator;
+  using reverse_iterator =
+      typename std::vector<std::shared_ptr<ASTNode>>::reverse_iterator;
   using const_iterator =
       typename std::vector<std::shared_ptr<ASTNode>>::const_iterator;
+  using const_reverse_iterator =
+      typename std::vector<std::shared_ptr<ASTNode>>::const_reverse_iterator;
 
   void setType(const std::type_index&);
   std::type_index type() const;
@@ -37,10 +41,16 @@ class CAEPARSER_API ASTNode : public std::enable_shared_from_this<ASTNode> {
   // iterator for children
   iterator begin();
   iterator end();
+  reverse_iterator rbegin();
+  reverse_iterator rend();
 
   const_iterator begin() const;
   const_iterator end() const;
 
+  const_reverse_iterator rbegin() const;
+  const_reverse_iterator rend() const;
+
+  bool childEmpty() const;
   size_t childreSize() const;
 
   std::shared_ptr<ASTNode> at(uint64_t idx) const;
