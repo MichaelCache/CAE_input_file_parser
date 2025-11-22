@@ -4,10 +4,12 @@
 #include <type_traits>
 
 #include "ast.h"
+#include "config/runtime_config.h"
 #include "control_tag.h"
 #include "parse_state.h"
 #include "sources.h"
 #include "tao/pegtl.hpp"
+#include "utils/progress.h"
 
 namespace CAEParser {
 namespace peg = tao::pegtl;
@@ -50,6 +52,9 @@ struct SaveToState<Rule> : peg::normal<Rule> {
     node->_end._colum = pos.column;
     state._stack.pop();
     state._stack.top()->addChildren(node);
+    if (RuntimeConfig::ins()._show_progress) {
+      Progress::ins().setCount(pos.byte);
+    }
   }
 
   template <typename ParseInput, typename... States>
@@ -68,6 +73,14 @@ struct SaveToState<Rule> : peg::normal<Rule> {
     auto&& pos = in.position();
     state._not_parsed.addContent(in.source(), *in.current(), pos.byte, pos.line,
                                  pos.column);
+  }
+
+  template <typename ParseInput, typename... States>
+  static void success(const ParseInput& in, ParseState& state,
+                      States&&... /*unused*/) noexcept {
+    if (RuntimeConfig::ins()._show_progress) {
+      Progress::ins().setCount(in.position().byte);
+    }
   }
 };
 

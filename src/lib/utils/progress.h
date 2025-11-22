@@ -10,6 +10,7 @@ class Progress {
   void addCount(uint64_t);
   void setCount(uint64_t);
   double progress() const;
+  void done();
 
  private:
   Progress(/* args */) = default;

@@ -1,5 +1,7 @@
 #include "k_parser.h"
 
+#include <chrono>
+#include <future>
 #include <tuple>
 
 #include "config/runtime_config.h"
@@ -32,8 +34,24 @@ KParser::parse(const std::string& content, const std::string& fn) {
         trace_input, trace_state);
   }
 
+  CAEParser::Progress::ins().setTotal(input.size());
+
   CAEParser::ParseState state;
-  peg::parse<k_grammar, peg::nothing, KParseControl>(input, state);
+  auto future = std::async(std::launch::async, [&]() {
+    peg::parse<k_grammar, peg::nothing, KParseControl>(input, state);
+  });
+
+  if (CAEParser::RuntimeConfig::ins()._show_progress) {
+    while (future.wait_for(std::chrono::seconds(1)) !=
+           std::future_status::ready) {
+      std::cout << "Progress: " << CAEParser::Progress::ins().progress()
+                << std::endl;
+    }
+    std::cout << "Progress: " << CAEParser::Progress::ins().progress()
+              << std::endl;
+  }
+
+  future.get();
   return std::make_tuple(state._ast, state._not_parsed);
 }
 
@@ -55,8 +73,24 @@ KParser::parseFile(const std::string& fn) {
         trace_input, trace_state);
   }
 
+  CAEParser::Progress::ins().setTotal(input.size());
   CAEParser::ParseState state;
-  peg::parse<k_grammar, peg::nothing, KParseControl>(input, state);
+  auto future = std::async(std::launch::async, [&]() {
+    peg::parse<k_grammar, peg::nothing, KParseControl>(input, state);
+  });
+
+  if (CAEParser::RuntimeConfig::ins()._show_progress) {
+    while (future.wait_for(std::chrono::seconds(1)) !=
+           std::future_status::ready) {
+      std::cout << "Progress: " << CAEParser::Progress::ins().progress()
+                << std::endl;
+    }
+    CAEParser::Progress::ins().done();
+    std::cout << "Progress: " << CAEParser::Progress::ins().progress()
+              << std::endl;
+  }
+
+  future.get();
   return std::make_tuple(state._ast, state._not_parsed);
 }
 

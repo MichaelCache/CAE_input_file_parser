@@ -1,8 +1,10 @@
 #pragma once
 
+#include "config/runtime_config.h"
 #include "k_control_tag.h"
 #include "parser/parse_control.h"
 #include "parser/parse_state.h"
+#include "utils/progress.h"
 
 namespace K {
 template <typename Rule>
@@ -43,6 +45,10 @@ struct KParseControl<Rule> : CAEParser::SaveToState<Rule> {
       std::transform(node->_content.begin(), node->_content.end(),
                      node->_content.begin(),
                      [](char& c) { return std::toupper(c); });
+    }
+
+    if (CAEParser::RuntimeConfig::ins()._show_progress) {
+      CAEParser::Progress::ins().setCount(pos.byte);
     }
   }
 };
