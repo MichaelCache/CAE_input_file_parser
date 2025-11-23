@@ -11,6 +11,7 @@
 #include "tao/pegtl.hpp"
 #include "tao/pegtl/contrib/analyze.hpp"
 #include "tao/pegtl/contrib/trace.hpp"
+#include "utils/progress_ostream.h"
 
 namespace K {
 namespace peg = tao::pegtl;
@@ -42,13 +43,14 @@ KParser::parse(const std::string& content, const std::string& fn) {
   });
 
   if (CAEParser::RuntimeConfig::ins()._show_progress) {
+    CAEParser::ProgressBar bar(input.size());
+    CAEParser::cout_wrapper << "Parsing...\n";
     while (future.wait_for(std::chrono::seconds(1)) !=
            std::future_status::ready) {
-      std::cout << "Progress: " << CAEParser::Progress::ins().progress()
-                << std::endl;
+      CAEParser::cout_wrapper
+          << bar.setProgress(CAEParser::Progress::ins().progress());
     }
-    std::cout << "Progress: " << CAEParser::Progress::ins().progress()
-              << std::endl;
+    CAEParser::cout_wrapper << bar.done();
   }
 
   future.get();
@@ -80,14 +82,15 @@ KParser::parseFile(const std::string& fn) {
   });
 
   if (CAEParser::RuntimeConfig::ins()._show_progress) {
-    while (future.wait_for(std::chrono::seconds(1)) !=
+    CAEParser::ProgressBar bar(input.size());
+    CAEParser::cout_wrapper << "Parsing...\n";
+    while (future.wait_for(std::chrono::seconds(0)) !=
            std::future_status::ready) {
-      std::cout << "Progress: " << CAEParser::Progress::ins().progress()
-                << std::endl;
+      CAEParser::cout_wrapper
+          << bar.setProgress(CAEParser::Progress::ins().progress());
+      std::this_thread::sleep_for(std::chrono::seconds(1));
     }
-    CAEParser::Progress::ins().done();
-    std::cout << "Progress: " << CAEParser::Progress::ins().progress()
-              << std::endl;
+    CAEParser::cout_wrapper << bar.done();
   }
 
   future.get();

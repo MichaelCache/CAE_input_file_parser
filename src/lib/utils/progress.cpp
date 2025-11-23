@@ -23,4 +23,7 @@ double Progress::progress() const {
 }
 
 void Progress::done() { _tick = _total; }
+
+uint64_t Progress::step() const { return _step; }
+uint64_t Progress::setStep(uint64_t s) { _step = s; }
 }  // namespace CAEParser

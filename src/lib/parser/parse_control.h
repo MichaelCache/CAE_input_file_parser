@@ -9,13 +9,11 @@
 #include "parse_state.h"
 #include "sources.h"
 #include "tao/pegtl.hpp"
+#include "utils/concept.h"
 #include "utils/progress.h"
 
 namespace CAEParser {
 namespace peg = tao::pegtl;
-
-template <typename T, typename Base>
-concept DerivedFromBase = std::is_base_of_v<Base, T>;
 
 /**
  * @brief save astnode to CAEParser::ParseState
@@ -26,7 +24,7 @@ template <typename Rule>
 struct SaveToState : peg::normal<Rule> {};
 
 template <typename Rule>
-  requires DerivedFromBase<Rule, astnode_tag>
+  requires CAEParser::DerivedFromBase<Rule, astnode_tag>
 struct SaveToState<Rule> : peg::normal<Rule> {
   template <typename ParseInput, typename... States>
   static void start(const ParseInput& in, ParseState& state,
@@ -65,7 +63,7 @@ struct SaveToState<Rule> : peg::normal<Rule> {
 };
 
 template <typename Rule>
-  requires DerivedFromBase<Rule, not_parsed_tag>
+  requires CAEParser::DerivedFromBase<Rule, not_parsed_tag>
 struct SaveToState<Rule> : peg::normal<Rule> {
   template <typename ParseInput, typename... States>
   static void start(const ParseInput& in, ParseState& state,
@@ -93,7 +91,7 @@ template <typename Rule>
 struct ParseToTree : SaveToState<Rule> {};
 
 template <typename Rule>
-  requires DerivedFromBase<Rule, savenode_tag>
+  requires CAEParser::DerivedFromBase<Rule, savenode_tag>
 struct ParseToTree<Rule> : SaveToState<Rule> {
   template <typename ParseInput, typename... States>
   static void success(const ParseInput& in, ParseState& state,

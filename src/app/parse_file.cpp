@@ -3,6 +3,7 @@
 #include "CLI/CLI.hpp"
 #include "config/runtime_config.h"
 #include "parser/k_parser/k_parser.h"
+#include "utils/progress_ostream.h"
 #include "version.h"
 
 enum class InputFileType {
@@ -57,14 +58,14 @@ int main(int argc, char const* argv[]) {
   }
 
   if (!not_parsed_content.empty()) {
-    std::cout << not_parsed_content << std::endl;
+    CAEParser::cout_wrapper << not_parsed_content << "\n";
   }
 
   if (input_file.empty()) {
     return app.exit(CLI::CallForHelp());
   }
   if (output_file.empty()) {
-    std::cout << tree << std::endl;
+    CAEParser::cout_wrapper << tree << "\n";
   } else {
     std::ofstream f(output_file);
     f << tree;
