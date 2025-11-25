@@ -3,7 +3,7 @@
 #include "CLI/CLI.hpp"
 #include "config/runtime_config.h"
 #include "parser/k_parser/k_parser.h"
-#include "utils/progress_ostream.h"
+#include "utils/cout_wrapper.h"
 #include "version.h"
 
 enum class InputFileType {

@@ -11,7 +11,7 @@
 #include "tao/pegtl.hpp"
 #include "tao/pegtl/contrib/analyze.hpp"
 #include "tao/pegtl/contrib/trace.hpp"
-#include "utils/progress_ostream.h"
+#include "utils/cout_wrapper.h"
 
 namespace K {
 namespace peg = tao::pegtl;

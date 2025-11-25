@@ -5,8 +5,9 @@
 #include <format>
 
 namespace CAEParser {
-ProgressBar::ProgressBar(uint64_t total, uint64_t bar_length)
-    : _total(total), _bar_length(bar_length) {}
+
+ProgressBar::ProgressBar(uint64_t bar_length) : _bar_length(bar_length) {}
+
 ProgressBar& ProgressBar::setProgress(double progress) {
   if (progress < 0) {
     _progress = 0;
@@ -25,16 +26,15 @@ ProgressBar& ProgressBar::done() {
 
 std::ostream& operator<<(std::ostream& os, const ProgressBar& v) {
   auto bar_count = int(floor(v._bar_length * v._progress));
-
-  os << "[";
+  os << '\r' << '[';
   for (size_t i = 0; i < bar_count; i++) {
-    os << "=";
+    os << '=';
   }
   for (size_t i = 0; i < v._bar_length - bar_count; i++) {
-    os << " ";
+    os << ' ';
   }
-  os << "]" << std::format(" {:>5.2f}%", v._progress * 100);
-
+  os << ']' << std::format(" {:>5.2f}%", v._progress * 100);
+  os.flush();
   return os;
 }
 

@@ -1,11 +1,10 @@
-#include "progress_ostream.h"
+#include "cout_wrapper.h"
 
 namespace CAEParser {
 
 OstreamWrapper& OstreamWrapper::operator<<(ProgressBar& v) {
-  _ost << "\r" << v;
+  _ost << v;
   _progress_mod = true;
-  _ost.flush();
   return *this;
 }
 

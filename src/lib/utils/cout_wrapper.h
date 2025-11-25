@@ -5,7 +5,10 @@
 #include "progress_bar.h"
 
 namespace CAEParser {
-
+/**
+ * @brief wrapper std::cout for pretty print progress bar
+ *
+ */
 class OstreamWrapper {
  private:
   bool _progress_mod{false};
