@@ -1,13 +1,14 @@
 #pragma once
 
 #include <cstdint>
+#include "platform.h"
 
 namespace CAEParser {
 /**
  * @brief save and calculate progress
  *
  */
-class Progress {
+class CAEPARSER_API Progress {
  public:
   static Progress& ins();
   void setTotal(uint64_t);
@@ -16,7 +17,7 @@ class Progress {
   double progress() const;
   void done();
   uint64_t step() const;
-  uint64_t setStep(uint64_t);
+  void setStep(uint64_t);
 
  private:
   Progress(/* args */) = default;

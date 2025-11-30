@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "progress_bar.h"
+#include "platform.h"
 
 namespace CAEParser {
 /**
@@ -31,5 +32,5 @@ class OstreamWrapper {
   OstreamWrapper& operator<<(ProgressBar& v);
 };
 
-extern OstreamWrapper cout_wrapper;
+extern CAEPARSER_API OstreamWrapper cout_wrapper;
 }  // namespace CAEParser
