@@ -82,7 +82,7 @@ KParser::parseFile(const std::string& fn) {
   });
 
   if (CAEParser::RuntimeConfig::ins()._show_progress) {
-    CAEParser::ProgressBar bar(input.size());
+    CAEParser::ProgressBar bar;
     CAEParser::cout_wrapper << "Parsing...\n";
     while (future.wait_for(std::chrono::seconds(0)) !=
            std::future_status::ready) {

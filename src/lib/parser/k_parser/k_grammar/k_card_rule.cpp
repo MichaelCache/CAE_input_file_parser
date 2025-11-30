@@ -4,6 +4,8 @@
 #include "special_card_content/airbag_particle.h"
 #include "special_card_content/airbag_reference_geometry_content.h"
 #include "special_card_content/airbag_shell_reference_geometry_content.h"
+#include "special_card_content/ale_fsi_to_load_node.h"
+#include "special_card_content/ale_structured_mesh_control_points.h"
 
 namespace K {
 
@@ -107,7 +109,10 @@ std::unordered_map<std::string_view, std::shared_ptr<KCardPatternBase>>
          std::shared_ptr<KCardPatternBase>(
              new KCardPattern<k_card_content<k_card_content_8_field, id_line>>(
                  "*ALE_FSI_SWITCH_MMG"))},
-        // TODO:ALE_FSI_TO_LOAD_NODE
+        {"*ALE_FSI_TO_LOAD_NODE",
+         std::shared_ptr<KCardPatternBase>(
+             new KCardPattern<k_card_content<ale_fsi_to_load_node>>(
+                 "*ALE_FSI_TO_LOAD_NODE"))},
         {"*ALE_INJECTION",
          std::shared_ptr<KCardPatternBase>(
              new KCardPattern<k_card_content<k_card_content_8_field>>(
@@ -160,7 +165,11 @@ std::unordered_map<std::string_view, std::shared_ptr<KCardPatternBase>>
          std::shared_ptr<KCardPatternBase>(
              new KCardPattern<k_card_content<k_card_content_8_field>>(
                  "*ALE_STRUCTURED_MESH"))},
-        //  TODO:ALE_STRUCTURED_MESH_CONTROL_POINTS
+        {"*ALE_STRUCTURED_MESH_CONTROL_POINTS",
+         std::shared_ptr<KCardPatternBase>(
+             new KCardPattern<
+                 k_card_content<ale_structured_mesh_control_points>>(
+                 "*ALE_STRUCTURED_MESH_CONTROL_POINTS"))},
         {"*ALE_STRUCTURED_MESH_JOIN",
          std::shared_ptr<KCardPatternBase>(
              new KCardPattern<k_card_content<k_card_content_8_field>>(
