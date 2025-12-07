@@ -7,24 +7,31 @@
 #include "utils/progress.h"
 
 namespace K {
+
+struct k_card_field;
+
 template <typename Rule>
-struct KParseControl : public CAEParser::SaveToState<Rule> {};
+struct KParseControl : public CAEParser::ParseToTree<Rule> {
+  template <typename ParseInput, typename... States>
+  static void failure(const ParseInput& in, CAEParser::ParseState& state,
+                      States&&... st) noexcept {
+    CAEParser::ParseToTree<Rule>::failure(in, state, st...);
+    // mark match faield kcard field to not parsed content
+    if (std::is_same_v<Rule, k_card_field>) {
+      auto&& pos = in.position();
+      state._not_parsed.addMarker(pos.source, pos.line, pos.column);
+    }
+  }
+};
 
 template <typename Rule>
   requires CAEParser::DerivedFromBase<Rule, CAEParser::savenode_tag>
-struct KParseControl<Rule> : CAEParser::SaveToState<Rule> {
+struct KParseControl<Rule> : CAEParser::ParseToTree<Rule> {
   template <typename ParseInput, typename... States>
   static void success(const ParseInput& in, CAEParser::ParseState& state,
-                      States&&... /*unused*/) noexcept {
+                      States&&... st) noexcept {
     auto node = state._stack.top();
-    node->_content =
-        std::string(in.begin() + node->_start._byte_pos, in.current());
-    auto&& pos = in.position();
-    node->_end._byte_pos = pos.byte;
-    node->_end._line = pos.line;
-    node->_end._colum = pos.column;
-    state._stack.pop();
-    state._stack.top()->addChildren(node);
+    CAEParser::ParseToTree<Rule>::success(in, state, st...);
     if (std::is_base_of_v<trim_tag, Rule>) {
       size_t start = node->_content.find_first_not_of(" \t");
       if (start != std::string::npos) {
@@ -45,10 +52,6 @@ struct KParseControl<Rule> : CAEParser::SaveToState<Rule> {
       std::transform(node->_content.begin(), node->_content.end(),
                      node->_content.begin(),
                      [](char& c) { return std::toupper(c); });
-    }
-
-    if (CAEParser::RuntimeConfig::ins()._show_progress) {
-      CAEParser::Progress::ins().setCount(pos.byte);
     }
   }
 };

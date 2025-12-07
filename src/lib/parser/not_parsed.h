@@ -4,6 +4,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <set>
 
 #include "platform.h"
 #include "position.h"
@@ -21,9 +22,12 @@ struct CAEPARSER_API NotParsedContent {
 struct CAEPARSER_API NotParsedRange {
   using FileName = std::string;
   using LineNo = uint64_t;
+  using ColNo = uint64_t;
 
   void addContent(const std::string& filename, const char& c, uint64_t pos,
-                  uint64_t line, uint64_t row);
+                  uint64_t line, uint64_t col);
+
+  void addMarker(const std::string& filename, uint64_t line, uint64_t col);
 
   bool empty() const;
 
@@ -32,6 +36,8 @@ struct CAEPARSER_API NotParsedRange {
 
   std::unordered_map<FileName, std::map<LineNo, std::vector<NotParsedContent>>>
       _not_parsed_range;
+  std::unordered_map<FileName, std::map<LineNo, std::set<ColNo>>>
+      _error_marker;
 };
 
 }  // namespace CAEParser

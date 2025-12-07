@@ -12,7 +12,7 @@ namespace CAEParser {
  */
 struct CAEPARSER_API Position {
   uint64_t _byte_pos{0};  // byte count from begin of file
-  uint64_t _line{0};
-  uint64_t _colum{0};
+  uint64_t _line{0};      // start from 1
+  uint64_t _colum{0};     // start from 1
 };
 }  // namespace CAEParser

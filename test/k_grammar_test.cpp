@@ -9,8 +9,10 @@
 #include "parser/k_parser/k_grammar/k_card_field.h"
 #include "parser/k_parser/k_grammar/k_size_field.h"
 #include "parser/k_parser/k_grammar/k_title_id.h"
+#include "parser/k_parser/k_parser.h"
 #include "parser/trace_control.h"
 #include "tao/pegtl/parse.hpp"
+#include "utils/cout_wrapper.h"
 
 namespace peg = tao::pegtl;
 
@@ -211,4 +213,19 @@ $    NID               X               Y               Z
   CHECK_EQ(card_line_node->at(1)->_content, "2.0");
   CHECK_EQ(card_line_node->at(2)->_content, "3.3");
   CHECK_EQ(card_line_node->at(3)->_content, "3.9");
+}
+
+TEST_CASE("print_error_marker_on_card_field") {
+  CAEParser::ParseState state;
+  K::KParser parser;
+  auto [tree, not_parsed] = parser.parse(R"(*KEYWORD
+*AIRBAG_REFERENCE_GEOMETRY_ID
+$       ID        SX        SY        SZ      NIDO      IOUT
+     -- 3        1.0       1.0       1.0        2         0
+$    NID               X               Y               Z
+       1            2.0              3.3            3.9
+*END)",
+                                         "memory");
+  CHECK_FALSE(not_parsed.empty());
+  CAEParser::cout_wrapper << not_parsed << '\n';
 }
