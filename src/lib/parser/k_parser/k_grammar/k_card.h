@@ -9,7 +9,6 @@
 #include "parser/k_parser/k_parse_state.h"
 #include "tao/pegtl.hpp"
 
-
 namespace K {
 namespace peg = tao::pegtl;
 
@@ -21,7 +20,9 @@ struct k_card_option : peg::plus<peg::any>,
                        to_upper_tag {};
 
 struct k_card_end
-    : peg::sor<peg::seq<peg::bol, peg::at<peg::one<'*'>>>, peg::eof> {};
+    : peg::seq<peg::star<peg::space>,
+               peg::sor<peg::seq<peg::bol, peg::at<peg::one<'*'>>>, peg::eof>> {
+};
 
 struct k_card_name_option : CAEParser::astnode_tag {
   using rule_t = k_card_name_option;
